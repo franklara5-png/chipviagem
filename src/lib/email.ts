@@ -96,3 +96,22 @@ export async function sendMarginAlertEmail(data: {
     html,
   });
 }
+
+export async function sendReviewRequestEmail(data: {
+  to: string;
+  html: string;
+  destinationName: string;
+}) {
+  if (!resend) {
+    console.log("[DEV] E-mail de avaliação não enviado:", { to: data.to, destination: data.destinationName });
+    console.log("[DEV] HTML length:", data.html.length);
+    return { id: "dev-mock" };
+  }
+
+  return resend.emails.send({
+    from: "ChipViagem <noreply@chipviagem.com.br>",
+    to: data.to,
+    subject: `Como foi a internet na sua viagem para ${data.destinationName}?`,
+    html: data.html,
+  });
+}

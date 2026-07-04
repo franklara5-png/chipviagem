@@ -4,6 +4,8 @@ import { PlanCard } from "@/components/plan-card";
 import { FaqSection } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedGuides, faqJsonLd } from "@/components/destination-related-guides";
+import { ReviewsList, aggregateRatingJsonLd } from "@/components/reviews-section";
+import { getApprovedReviewsForDestination, getAggregateRating } from "@/lib/reviews";
 import { db } from "@/db";
 import { destinations, plans } from "@/db/schema";
 import { getPlanFilterForDestination } from "@/lib/destinations/plan-filter";
@@ -67,7 +69,7 @@ export default async function DestinationPage({ params }: PageProps) {
     ? await db.select().from(plans).where(planFilter)
     : [];
 
-  const productJsonLd = countryPlans.map((plan) => ({
+  const productJsonLdBase = countryPlans.map((plan) => ({
     "@context": "https://schema.org",
     "@type": "Product",
     name: plan.name,
@@ -81,7 +83,26 @@ export default async function DestinationPage({ params }: PageProps) {
   }));
 
   const faqLd = dest.faqJson?.length ? faqJsonLd(dest.faqJson) : null;
-  const jsonLd = faqLd ? [...productJsonLd, faqLd] : productJsonLd;
+
+  const [destReviews, aggregate] = await Promise.all([
+    getApprovedReviewsForDestination(slug),
+    getAggregateRating(slug),
+  ]);
+
+  const aggregateLd =
+    aggregate && countryPlans.length > 0
+      ? aggregateRatingJsonLd({
+          ratingValue: aggregate.ratingValue,
+          reviewCount: aggregate.reviewCount,
+          productName: `Chip de viagem para ${dest.name}`,
+        })
+      : null;
+
+  const jsonLd = [
+    ...productJsonLdBase,
+    ...(aggregateLd ? [aggregateLd] : []),
+    ...(faqLd ? [faqLd] : []),
+  ];
 
   const introParagraphs = dest.intro?.split("\n\n").filter(Boolean) ?? [];
 
@@ -158,6 +179,13 @@ export default async function DestinationPage({ params }: PageProps) {
         slugs={dest.relatedPostSlugs ?? []}
         destinationName={dest.name}
       />
+
+      <section className="mx-auto max-w-3xl px-4">
+        <ReviewsList
+          reviews={destReviews}
+          title={`Avaliações de quem viajou para ${dest.name}`}
+        />
+      </section>
 
       <section className="mx-auto max-w-3xl px-4 py-8">
         <h2 className="mb-4 text-2xl font-bold text-ink">Como ativar seu eSIM</h2>

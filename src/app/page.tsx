@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/json-ld";
 import { db } from "@/db";
 import { plans, destinations } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
+import { ReviewsCarousel } from "@/components/reviews-carousel";
+import { getApprovedReviews } from "@/lib/reviews";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +73,8 @@ export default async function HomePage() {
   } catch {
     // DB not configured yet
   }
+
+  const approvedReviews = await getApprovedReviews({ limit: 8 }).catch(() => []);
 
   return (
     <PublicLayout>
@@ -177,6 +181,8 @@ export default async function HomePage() {
       </section>
 
       {/* Prova social */}
+      <ReviewsCarousel reviews={approvedReviews} />
+
       <section className="bg-primary/5 px-4 py-12">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-2xl font-bold text-ink">Milhares de brasileiros já viajaram conectados</h2>

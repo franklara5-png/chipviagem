@@ -6,6 +6,7 @@ import { formatBrl } from "@/lib/utils";
 import { getSetting } from "@/lib/settings";
 import { getAtRiskPlans } from "@/lib/margin-sync";
 import { getLatestExchangeRate } from "@/lib/exchange-rate";
+import { getReviewStats } from "@/lib/reviews";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { AlertTriangle } from "lucide-react";
 
@@ -65,6 +66,7 @@ export default async function AdminDashboardPage() {
   const minMargin = await getSetting("min_margin_percent");
   const usdRate = await getLatestExchangeRate();
   const atRiskPlans = await getAtRiskPlans();
+  const reviewStats = await getReviewStats();
 
   const salesPerDay = await db
     .select({
@@ -124,7 +126,7 @@ export default async function AdminDashboardPage() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-8">
         <StatCard label="Receita do mês" value={formatBrl(revenueMonth?.total ?? 0)} />
         <StatCard label="Pedidos hoje" value={String(ordersToday?.total ?? 0)} />
         <StatCard label="Pedidos 7 dias" value={String(orders7d?.total ?? 0)} />
@@ -132,7 +134,27 @@ export default async function AdminDashboardPage() {
         <StatCard label="Ticket médio" value={formatBrl(parseFloat(avgTicket?.avg ?? "0"))} />
         <StatCard label="Margem mínima" value={`${minMargin}%`} />
         <StatCard label="USD/BRL" value={usdRate.toFixed(4)} />
+        <StatCard
+          label="Nota média"
+          value={reviewStats.totalApproved > 0 ? `${reviewStats.averageRating} ★` : "—"}
+        />
+        <StatCard
+          label="Avaliações pendentes"
+          value={String(reviewStats.pendingModeration)}
+        />
       </div>
+
+      {reviewStats.pendingModeration > 0 && (
+        <div className="flex items-center gap-3 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-900">
+          <AlertTriangle className="h-5 w-5 shrink-0" />
+          <p className="text-sm">
+            {reviewStats.pendingModeration} avaliação(ões) aguardando moderação.{" "}
+            <Link href="/admin/avaliacoes?status=pending" className="underline">
+              Moderar agora
+            </Link>
+          </p>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-lg border border-slate-200 bg-white p-4 lg:col-span-2">

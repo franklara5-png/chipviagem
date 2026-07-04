@@ -11,6 +11,7 @@ import {
   Settings,
   Webhook,
   LogOut,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ const links = [
   { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
   { href: "/admin/planos", label: "Planos", icon: Package },
   { href: "/admin/destinos", label: "Destinos", icon: MapPin },
+  { href: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { href: "/admin/clientes", label: "Clientes", icon: Users },
   { href: "/admin/config", label: "Configurações", icon: Settings },
   { href: "/admin/webhooks", label: "Webhooks", icon: Webhook },

@@ -20,6 +20,8 @@ export const orderStatusEnum = pgEnum("order_status", [
   "refunded",
 ]);
 
+export const reviewStatusEnum = pgEnum("review_status", ["pending", "approved", "rejected"]);
+
 export const plans = pgTable("plans", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   providerPlanId: text("provider_plan_id").notNull(),
@@ -55,6 +57,8 @@ export const orders = pgTable("orders", {
   amountBrl: numeric("amount_brl", { precision: 10, scale: 2 }).notNull(),
   status: orderStatusEnum("status").notNull().default("pending"),
   providerOrderId: text("provider_order_id"),
+  travelDate: timestamp("travel_date"),
+  reviewRequestSentAt: timestamp("review_request_sent_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   paidAt: timestamp("paid_at"),
   deliveredAt: timestamp("delivered_at"),
@@ -136,6 +140,26 @@ export const priceChangesRelations = relations(priceChanges, ({ one }) => ({
   plan: one(plans, { fields: [priceChanges.planId], references: [plans.id] }),
 }));
 
+export const reviews = pgTable("reviews", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  orderId: text("order_id")
+    .notNull()
+    .unique()
+    .references(() => orders.id),
+  rating: integer("rating"),
+  comment: text("comment"),
+  customerFirstName: text("customer_first_name").notNull(),
+  destinationSlug: text("destination_slug").notNull(),
+  status: reviewStatusEnum("status").notNull().default("pending"),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  moderatedAt: timestamp("moderated_at"),
+});
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  order: one(orders, { fields: [reviews.orderId], references: [orders.id] }),
+}));
+
 export const plansRelations = relations(plans, ({ many }) => ({
   orders: many(orders),
 }));
@@ -158,3 +182,4 @@ export type Setting = typeof settings.$inferSelect;
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
 export type ExchangeRate = typeof exchangeRates.$inferSelect;
 export type PriceChange = typeof priceChanges.$inferSelect;
+export type Review = typeof reviews.$inferSelect;

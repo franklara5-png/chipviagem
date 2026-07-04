@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runExchangeRateCron } from "@/lib/margin-sync";
-
-function verifyCronSecret(request: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    console.warn("[cron] CRON_SECRET não configurado");
-    return false;
-  }
-  const auth = request.headers.get("authorization");
-  return auth === `Bearer ${secret}`;
-}
+import { runReviewRequestCron } from "@/lib/reviews";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 export async function GET(request: NextRequest) {
   if (!verifyCronSecret(request)) {
@@ -17,8 +9,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const result = await runExchangeRateCron();
-    return NextResponse.json({ ok: true, ...result });
+    const exchange = await runExchangeRateCron();
+    const reviews = await runReviewRequestCron();
+    return NextResponse.json({ ok: true, exchange, reviews });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Erro interno";
     console.error("[cron/exchange-rate]", message);
