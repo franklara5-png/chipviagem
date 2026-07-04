@@ -24,7 +24,13 @@ export default function PrivacidadePage() {
         <ul>
           <li>Nome, e-mail e CPF — para processamento do pedido e emissão de cobrança</li>
           <li>Dados de pagamento — processados pelo Asaas, sem armazenamento de cartão em nossos servidores</li>
-          <li>Dados de navegação — cookies e analytics para melhorar a experiência</li>
+          <li>
+            Cookie de origem (<code>cv_acq</code>) — armazena, na primeira visita, parâmetros UTM,
+            página de entrada, referrer e código de indicação (se houver), por até 90 dias, para
+            entendermos como você chegou ao site. Não usamos fingerprinting nem ferramentas
+            externas de analytics. O cookie de indicação para desconto (<code>cv_ref</code>) é
+            separado e tem finalidade distinta.
+          </li>
         </ul>
 
         <h2>3. Finalidade</h2>

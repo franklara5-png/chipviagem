@@ -13,11 +13,13 @@ import {
   LogOut,
   Star,
   Ticket,
+  TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/aquisicao", label: "Aquisição", icon: TrendingUp },
   { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
   { href: "/admin/planos", label: "Planos", icon: Package },
   { href: "/admin/destinos", label: "Destinos", icon: MapPin },

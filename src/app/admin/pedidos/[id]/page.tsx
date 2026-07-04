@@ -12,6 +12,7 @@ import {
   resendEmailFormAction,
   markRefundedFormAction,
 } from "../actions";
+import { AcquisitionOrigin } from "@/components/admin/acquisition-origin";
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Pendente",
@@ -206,6 +207,17 @@ export default async function PedidoDetailPage({ params }: PageProps) {
           </section>
         )}
       </div>
+
+      <AcquisitionOrigin
+        channel={order.channel}
+        utmSource={order.utmSource}
+        utmMedium={order.utmMedium}
+        utmCampaign={order.utmCampaign}
+        utmContent={order.utmContent}
+        utmTerm={order.utmTerm}
+        referrerDomain={order.referrerDomain}
+        landingPage={order.landingPage}
+      />
     </div>
   );
 }

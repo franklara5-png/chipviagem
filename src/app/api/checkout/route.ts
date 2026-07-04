@@ -13,6 +13,7 @@ import {
 import { verifyTurnstile } from "@/lib/turnstile";
 import { generateNanoid, validateCpf } from "@/lib/utils";
 import { validateCoupon } from "@/lib/coupons";
+import { getAcquisitionFromRequest } from "@/lib/acquisition";
 
 const checkoutSchema = z.object({
   planSlug: z.string().min(1),
@@ -96,6 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     const amountBrl = finalAmount;
+    const acquisition = await getAcquisitionFromRequest(request);
 
     const [order] = await db
       .insert(orders)
@@ -110,6 +112,14 @@ export async function POST(request: NextRequest) {
         discountBrl: discountBrl.toFixed(2),
         couponId,
         status: "pending",
+        utmSource: acquisition.utmSource,
+        utmMedium: acquisition.utmMedium,
+        utmCampaign: acquisition.utmCampaign,
+        utmContent: acquisition.utmContent,
+        utmTerm: acquisition.utmTerm,
+        referrerDomain: acquisition.referrerDomain,
+        landingPage: acquisition.landingPage,
+        channel: acquisition.channel,
       })
       .returning();
 

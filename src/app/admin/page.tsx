@@ -9,6 +9,7 @@ import { getLatestExchangeRate } from "@/lib/exchange-rate";
 import { getReviewStats } from "@/lib/reviews";
 import { getReferralStats30d } from "@/lib/referrals";
 import { getWhatsAppClicks7d } from "@/lib/analytics";
+import { getTopChannelRevenueShare30d } from "@/lib/acquisition-stats";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { AlertTriangle } from "lucide-react";
 
@@ -71,6 +72,7 @@ export default async function AdminDashboardPage() {
   const reviewStats = await getReviewStats();
   const referralStats = await getReferralStats30d();
   const whatsappClicks7d = await getWhatsAppClicks7d();
+  const topChannel = await getTopChannelRevenueShare30d();
 
   const salesPerDay = await db
     .select({
@@ -151,6 +153,14 @@ export default async function AdminDashboardPage() {
           value={`${referralStats.conversions30d} · ${formatBrl(referralStats.revenue30d)}`}
         />
         <StatCard label="Cliques no WhatsApp (7d)" value={String(whatsappClicks7d)} />
+        <StatCard
+          label="Canal top (30d)"
+          value={
+            topChannel.channel
+              ? `${topChannel.label} — ${topChannel.sharePercent}%`
+              : "—"
+          }
+        />
       </div>
 
       {reviewStats.pendingModeration > 0 && (
