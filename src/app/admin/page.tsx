@@ -7,6 +7,7 @@ import { getSetting } from "@/lib/settings";
 import { getAtRiskPlans } from "@/lib/margin-sync";
 import { getLatestExchangeRate } from "@/lib/exchange-rate";
 import { getReviewStats } from "@/lib/reviews";
+import { getReferralStats30d } from "@/lib/referrals";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { AlertTriangle } from "lucide-react";
 
@@ -67,6 +68,7 @@ export default async function AdminDashboardPage() {
   const usdRate = await getLatestExchangeRate();
   const atRiskPlans = await getAtRiskPlans();
   const reviewStats = await getReviewStats();
+  const referralStats = await getReferralStats30d();
 
   const salesPerDay = await db
     .select({
@@ -141,6 +143,10 @@ export default async function AdminDashboardPage() {
         <StatCard
           label="Avaliações pendentes"
           value={String(reviewStats.pendingModeration)}
+        />
+        <StatCard
+          label="Vendas por indicação (30d)"
+          value={`${referralStats.conversions30d} · ${formatBrl(referralStats.revenue30d)}`}
         />
       </div>
 

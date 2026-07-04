@@ -5,6 +5,8 @@ import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { formatBrl, formatCpf, formatDataMb } from "@/lib/utils";
 import type { Plan } from "@/db/schema";
+import { getRefFromCookie } from "@/components/ref-cookie-handler";
+import { REFERRAL_FRIEND_DISCOUNT_BRL } from "@/lib/referrals";
 
 declare global {
   interface Window {
@@ -64,6 +66,20 @@ export function CheckoutForm({ plan }: CheckoutFormProps) {
   const [addressNumber, setAddressNumber] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountBrl: number;
+    finalAmountBrl: number;
+  } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [autoApplied, setAutoApplied] = useState(false);
+
+  const retailPrice = parseFloat(plan.retailPriceBrl);
+  const finalPrice = appliedCoupon?.finalAmountBrl ?? retailPrice;
+  const discountAmount = appliedCoupon?.discountBrl ?? 0;
+
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const renderTurnstile = useCallback(() => {
@@ -85,6 +101,63 @@ export function CheckoutForm({ plan }: CheckoutFormProps) {
   useEffect(() => {
     renderTurnstile();
   }, [renderTurnstile]);
+
+  const applyCoupon = useCallback(
+    async (code: string, silent = false) => {
+      if (!code.trim()) return;
+      setCouponLoading(true);
+      if (!silent) setCouponError(null);
+
+      try {
+        const res = await fetch("/api/checkout/validate-coupon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: code.trim(),
+            planSlug: plan.slug,
+            customerEmail: email || undefined,
+            customerCpf: cpf.replace(/\D/g, "") || undefined,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!data.valid) {
+          if (!silent) setCouponError(data.error ?? "Cupom inválido");
+          setAppliedCoupon(null);
+          return;
+        }
+
+        setCouponCode(code.trim().toUpperCase());
+        setAppliedCoupon({
+          code: code.trim().toUpperCase(),
+          discountBrl: data.discountBrl,
+          finalAmountBrl: data.finalAmountBrl,
+        });
+        setCouponError(null);
+      } catch {
+        if (!silent) setCouponError("Erro ao validar cupom");
+      } finally {
+        setCouponLoading(false);
+      }
+    },
+    [plan.slug, email, cpf]
+  );
+
+  useEffect(() => {
+    if (!autoApplied || !couponCode) return;
+    if (!email || cpf.replace(/\D/g, "").length !== 11) return;
+    applyCoupon(couponCode, true);
+  }, [email, cpf, autoApplied, couponCode, applyCoupon]);
+
+  useEffect(() => {
+    if (autoApplied) return;
+    const refCode = getRefFromCookie();
+    if (refCode) {
+      setCouponCode(refCode);
+      setAutoApplied(true);
+    }
+  }, [autoApplied]);
 
   useEffect(() => {
     if (!publicId || step !== "pix") return;
@@ -120,6 +193,10 @@ export function CheckoutForm({ plan }: CheckoutFormProps) {
         paymentMethod,
         turnstileToken,
       };
+
+      if (appliedCoupon) {
+        payload.couponCode = appliedCoupon.code;
+      }
 
       if (paymentMethod === "card") {
         payload.creditCard = {
@@ -460,9 +537,62 @@ export function CheckoutForm({ plan }: CheckoutFormProps) {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-ink">Cupom de desconto</h2>
+          <div className="mt-4 flex gap-2">
+            <input
+              type="text"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+              placeholder="Código do cupom"
+              className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            {appliedCoupon ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setAppliedCoupon(null);
+                  setCouponCode("");
+                  setCouponError(null);
+                }}
+                className="shrink-0 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+              >
+                Remover
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => applyCoupon(couponCode)}
+                disabled={couponLoading || !couponCode.trim()}
+                className="shrink-0 rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:opacity-50"
+              >
+                {couponLoading ? "…" : "Aplicar"}
+              </button>
+            )}
+          </div>
+          {appliedCoupon && (
+            <p className="mt-2 text-sm text-green-600">
+              Cupom aplicado! Desconto de {formatBrl(appliedCoupon.discountBrl)}
+            </p>
+          )}
+          {couponError && <p className="mt-2 text-sm text-red-600">{couponError}</p>}
+          {autoApplied && appliedCoupon && (
+            <p className="mt-2 text-xs text-slate-500">
+              Desconto de indicação (R$ {REFERRAL_FRIEND_DISCOUNT_BRL}) aplicado automaticamente.
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-600">Total</span>
-            <span className="text-2xl font-bold text-primary">{formatBrl(plan.retailPriceBrl)}</span>
+            <div className="text-right">
+              {discountAmount > 0 && (
+                <span className="mr-2 text-sm text-slate-400 line-through">
+                  {formatBrl(retailPrice)}
+                </span>
+              )}
+              <span className="text-2xl font-bold text-primary">{formatBrl(finalPrice)}</span>
+            </div>
           </div>
           <p className="mt-1 text-xs text-slate-500">
             {plan.name} · {formatDataMb(plan.dataAmountMb)} · {plan.validityDays} dias

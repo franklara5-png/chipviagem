@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { formatBrl, formatDataMb } from "@/lib/utils";
+import { ReferralSection } from "@/components/referral-section";
 
 interface OrderPlan {
   name: string;
@@ -25,11 +26,16 @@ interface OrderData {
   customerEmail: string;
   paymentMethod: string;
   amountBrl: string;
+  discountBrl?: string;
   createdAt: string;
   paidAt: string | null;
   deliveredAt: string | null;
   plan: OrderPlan;
   esim?: OrderEsim;
+  referral?: {
+    refCode: string;
+    referralLink: string;
+  };
 }
 
 interface OrderStatusProps {
@@ -177,7 +183,18 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
           </div>
           <div className="flex justify-between">
             <dt className="text-slate-500">Valor</dt>
-            <dd className="font-semibold text-primary">{formatBrl(order.amountBrl)}</dd>
+            <dd className="font-semibold text-primary">
+              {parseFloat(order.discountBrl ?? "0") > 0 ? (
+                <>
+                  <span className="mr-2 text-sm font-normal text-slate-400 line-through">
+                    {formatBrl(parseFloat(order.amountBrl) + parseFloat(order.discountBrl ?? "0"))}
+                  </span>
+                  {formatBrl(order.amountBrl)}
+                </>
+              ) : (
+                formatBrl(order.amountBrl)
+              )}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-slate-500">Pagamento</dt>
@@ -235,6 +252,13 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
             )}
           </div>
         </div>
+      )}
+
+      {order.status === "delivered" && order.referral && (
+        <ReferralSection
+          refCode={order.referral.refCode}
+          referralLink={order.referral.referralLink}
+        />
       )}
     </div>
   );

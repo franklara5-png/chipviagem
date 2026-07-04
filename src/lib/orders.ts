@@ -3,6 +3,8 @@ import { esims, orders, plans } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getProvider } from "@/lib/providers";
 import { sendEsimEmail } from "@/lib/email";
+import { getOrCreateReferralForOrder, getReferralLink, processReferralConversion } from "@/lib/referrals";
+import { incrementCouponUsage } from "@/lib/coupons";
 
 export async function provisionOrder(orderId: string): Promise<{ success: boolean; error?: string }> {
   const [order] = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1);
@@ -40,6 +42,8 @@ export async function provisionOrder(orderId: string): Promise<{ success: boolea
       .set({ status: "delivered", deliveredAt: new Date() })
       .where(eq(orders.id, orderId));
 
+    const referral = await getOrCreateReferralForOrder(orderId);
+
     await sendEsimEmail({
       to: order.customerEmail,
       customerName: order.customerName,
@@ -48,6 +52,8 @@ export async function provisionOrder(orderId: string): Promise<{ success: boolea
       activationCode: esimDetails.activationCode,
       smdpAddress: esimDetails.smdpAddress,
       orderPublicId: order.publicId,
+      referralLink: referral ? getReferralLink(referral.refCode) : undefined,
+      refCode: referral?.refCode,
     });
 
     return { success: true };
@@ -67,5 +73,10 @@ export async function markOrderPaid(orderId: string) {
     .set({ status: "paid", paidAt: new Date() })
     .where(eq(orders.id, orderId));
 
+  if (order.couponId) {
+    await incrementCouponUsage(order.couponId);
+  }
+
+  await processReferralConversion(orderId);
   await provisionOrder(orderId);
 }

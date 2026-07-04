@@ -21,6 +21,8 @@ export const orderStatusEnum = pgEnum("order_status", [
 ]);
 
 export const reviewStatusEnum = pgEnum("review_status", ["pending", "approved", "rejected"]);
+export const couponTypeEnum = pgEnum("coupon_type", ["percent", "fixed"]);
+export const couponOriginEnum = pgEnum("coupon_origin", ["referral", "manual"]);
 
 export const plans = pgTable("plans", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -55,6 +57,8 @@ export const orders = pgTable("orders", {
   asaasCustomerId: text("asaas_customer_id"),
   paymentMethod: paymentMethodEnum("payment_method").notNull(),
   amountBrl: numeric("amount_brl", { precision: 10, scale: 2 }).notNull(),
+  discountBrl: numeric("discount_brl", { precision: 10, scale: 2 }).notNull().default("0"),
+  couponId: text("coupon_id"),
   status: orderStatusEnum("status").notNull().default("pending"),
   providerOrderId: text("provider_order_id"),
   travelDate: timestamp("travel_date"),
@@ -160,6 +164,55 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   order: one(orders, { fields: [reviews.orderId], references: [orders.id] }),
 }));
 
+export const coupons = pgTable("coupons", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  code: text("code").notNull().unique(),
+  type: couponTypeEnum("type").notNull(),
+  value: numeric("value", { precision: 10, scale: 2 }).notNull(),
+  minOrderBrl: numeric("min_order_brl", { precision: 10, scale: 2 }).notNull().default("0"),
+  maxUses: integer("max_uses"),
+  usedCount: integer("used_count").notNull().default(0),
+  expiresAt: timestamp("expires_at"),
+  origin: couponOriginEnum("origin").notNull().default("manual"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const referrals = pgTable("referrals", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  referrerOrderId: text("referrer_order_id")
+    .notNull()
+    .unique()
+    .references(() => orders.id),
+  referrerEmail: text("referrer_email").notNull(),
+  refCode: text("ref_code").notNull().unique(),
+  friendOrderId: text("friend_order_id").references(() => orders.id),
+  rewardCouponId: text("reward_coupon_id").references(() => coupons.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  convertedAt: timestamp("converted_at"),
+});
+
+export const couponsRelations = relations(coupons, ({ many }) => ({
+  orders: many(orders),
+}));
+
+export const referralsRelations = relations(referrals, ({ one }) => ({
+  referrerOrder: one(orders, {
+    fields: [referrals.referrerOrderId],
+    references: [orders.id],
+    relationName: "referrerOrder",
+  }),
+  friendOrder: one(orders, {
+    fields: [referrals.friendOrderId],
+    references: [orders.id],
+    relationName: "friendOrder",
+  }),
+  rewardCoupon: one(coupons, {
+    fields: [referrals.rewardCouponId],
+    references: [coupons.id],
+  }),
+}));
+
 export const plansRelations = relations(plans, ({ many }) => ({
   orders: many(orders),
 }));
@@ -183,3 +236,5 @@ export type WebhookEvent = typeof webhookEvents.$inferSelect;
 export type ExchangeRate = typeof exchangeRates.$inferSelect;
 export type PriceChange = typeof priceChanges.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
+export type Coupon = typeof coupons.$inferSelect;
+export type Referral = typeof referrals.$inferSelect;

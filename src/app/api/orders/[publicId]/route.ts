@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { esims, orders, plans } from "@/db/schema";
+import { esims, orders, plans, referrals } from "@/db/schema";
+import { getReferralLink } from "@/lib/referrals";
 
 export async function GET(
   _request: NextRequest,
@@ -29,10 +30,13 @@ export async function GET(
       esimSmdpAddress: esims.smdpAddress,
       esimActivationCode: esims.activationCode,
       esimExpiresAt: esims.expiresAt,
+      discountBrl: orders.discountBrl,
+      refCode: referrals.refCode,
     })
     .from(orders)
     .innerJoin(plans, eq(orders.planId, plans.id))
     .leftJoin(esims, eq(esims.orderId, orders.id))
+    .leftJoin(referrals, eq(referrals.referrerOrderId, orders.id))
     .where(eq(orders.publicId, publicId))
     .limit(1);
 
@@ -47,6 +51,7 @@ export async function GET(
     customerEmail: row.customerEmail,
     paymentMethod: row.paymentMethod,
     amountBrl: row.amountBrl,
+    discountBrl: row.discountBrl,
     createdAt: row.createdAt,
     paidAt: row.paidAt,
     deliveredAt: row.deliveredAt,
@@ -57,6 +62,13 @@ export async function GET(
       validityDays: row.planValidityDays,
     },
   };
+
+  if (row.status === "delivered" && row.refCode) {
+    response.referral = {
+      refCode: row.refCode,
+      referralLink: getReferralLink(row.refCode),
+    };
+  }
 
   if (row.status === "delivered" && row.esimQrCodeUrl) {
     response.esim = {

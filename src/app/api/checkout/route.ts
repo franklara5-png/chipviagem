@@ -12,6 +12,7 @@ import {
 } from "@/lib/asaas";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { generateNanoid, validateCpf } from "@/lib/utils";
+import { validateCoupon } from "@/lib/coupons";
 
 const checkoutSchema = z.object({
   planSlug: z.string().min(1),
@@ -20,6 +21,7 @@ const checkoutSchema = z.object({
   customerCpf: z.string().min(11).max(14),
   paymentMethod: z.enum(["pix", "card"]),
   turnstileToken: z.string().min(1),
+  couponCode: z.string().optional(),
   creditCard: z
     .object({
       holderName: z.string().min(2),
@@ -70,7 +72,30 @@ export async function POST(request: NextRequest) {
 
     const publicId = generateNanoid();
     const cpfDigits = body.customerCpf.replace(/\D/g, "");
-    const amountBrl = parseFloat(plan.retailPriceBrl);
+    const retailPrice = parseFloat(plan.retailPriceBrl);
+
+    let finalAmount = retailPrice;
+    let discountBrl = 0;
+    let couponId: string | undefined;
+
+    if (body.couponCode?.trim()) {
+      const couponResult = await validateCoupon(
+        body.couponCode,
+        retailPrice,
+        body.customerEmail,
+        cpfDigits
+      );
+
+      if (!couponResult.valid) {
+        return NextResponse.json({ error: couponResult.error ?? "Cupom inválido" }, { status: 400 });
+      }
+
+      discountBrl = couponResult.discountBrl ?? 0;
+      finalAmount = couponResult.finalAmountBrl ?? retailPrice;
+      couponId = couponResult.couponId;
+    }
+
+    const amountBrl = finalAmount;
 
     const [order] = await db
       .insert(orders)
@@ -81,7 +106,9 @@ export async function POST(request: NextRequest) {
         customerCpf: cpfDigits,
         planId: plan.id,
         paymentMethod: body.paymentMethod,
-        amountBrl: plan.retailPriceBrl,
+        amountBrl: amountBrl.toFixed(2),
+        discountBrl: discountBrl.toFixed(2),
+        couponId,
         status: "pending",
       })
       .returning();

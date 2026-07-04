@@ -10,7 +10,24 @@ export async function sendEsimEmail(data: {
   activationCode: string;
   smdpAddress: string;
   orderPublicId: string;
+  referralLink?: string;
+  refCode?: string;
 }) {
+  const referralSection = data.referralLink
+    ? `
+      <div style="margin-top:24px;padding:16px;background:#f0f9ff;border-radius:8px;border:1px solid #bae6fd">
+        <h2 style="color:#0369a1;font-size:16px;margin:0 0 8px">Indique e ganhe R$ 10</h2>
+        <p style="color:#334155;font-size:14px;margin:0 0 12px">
+          Compartilhe seu link com amigos. Eles ganham R$ 10 na primeira compra e você também ganha R$ 10 quando pagarem.
+        </p>
+        <p style="font-family:monospace;font-size:13px;background:#fff;padding:8px;border-radius:4px;word-break:break-all">
+          ${data.referralLink}
+        </p>
+        ${data.refCode ? `<p style="color:#64748b;font-size:12px;margin:8px 0 0">Código: <strong>${data.refCode}</strong></p>` : ""}
+      </div>
+    `
+    : "";
+
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #0EA5E9;">ChipViagem</h1>
@@ -21,6 +38,7 @@ export async function sendEsimEmail(data: {
       <p>Escaneie o QR code abaixo ou acesse seu pedido:</p>
       <img src="${data.qrCodeUrl}" alt="QR Code eSIM" width="250" />
       <p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br"}/pedido/${data.orderPublicId}">Ver pedido online</a></p>
+      ${referralSection}
       <hr/>
       <p style="color: #666; font-size: 12px;">ChipViagem — Altivia CNPJ 63.101.423/0001-18</p>
     </div>
@@ -112,6 +130,27 @@ export async function sendReviewRequestEmail(data: {
     from: "ChipViagem <noreply@chipviagem.com.br>",
     to: data.to,
     subject: `Como foi a internet na sua viagem para ${data.destinationName}?`,
+    html: data.html,
+  });
+}
+
+export async function sendReferralRewardEmail(data: {
+  to: string;
+  html: string;
+  rewardCode: string;
+}) {
+  if (!resend) {
+    console.log("[DEV] E-mail de recompensa de indicação não enviado:", {
+      to: data.to,
+      rewardCode: data.rewardCode,
+    });
+    return { id: "dev-mock" };
+  }
+
+  return resend.emails.send({
+    from: "ChipViagem <noreply@chipviagem.com.br>",
+    to: data.to,
+    subject: `🎉 Você ganhou R$ 10 — seu amigo comprou com sua indicação!`,
     html: data.html,
   });
 }
