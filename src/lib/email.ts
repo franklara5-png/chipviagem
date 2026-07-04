@@ -1,4 +1,6 @@
 import { Resend } from "resend";
+import { getSetting } from "@/lib/settings";
+import { emailSupportBlock, getWhatsAppMessage, normalizeE164 } from "@/lib/whatsapp";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -28,6 +30,14 @@ export async function sendEsimEmail(data: {
     `
     : "";
 
+  const supportEmail = await getSetting("support_email");
+  const whatsappNumber = normalizeE164(await getSetting("whatsapp_number"));
+  const supportSection = emailSupportBlock({
+    supportEmail,
+    whatsappNumber: whatsappNumber || undefined,
+    whatsappMessage: getWhatsAppMessage(`/pedido/${data.orderPublicId}`),
+  });
+
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #0EA5E9;">ChipViagem</h1>
@@ -39,6 +49,7 @@ export async function sendEsimEmail(data: {
       <img src="${data.qrCodeUrl}" alt="QR Code eSIM" width="250" />
       <p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br"}/pedido/${data.orderPublicId}">Ver pedido online</a></p>
       ${referralSection}
+      ${supportSection}
       <hr/>
       <p style="color: #666; font-size: 12px;">ChipViagem — Altivia CNPJ 63.101.423/0001-18</p>
     </div>

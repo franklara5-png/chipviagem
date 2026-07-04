@@ -8,6 +8,7 @@ const DEFAULTS: Record<string, string> = {
   auto_reprice_enabled: "false",
   usd_brl_rate: "5.50",
   support_email: "suporte@chipviagem.com.br",
+  whatsapp_number: "",
 };
 
 export async function getSetting(key: string): Promise<string> {

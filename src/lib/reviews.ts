@@ -6,6 +6,7 @@ import { customAlphabet } from "nanoid";
 import { render } from "@react-email/render";
 import ReviewRequestEmail from "../../emails/review-request";
 import { sendReviewRequestEmail } from "@/lib/email";
+import { getWhatsAppEmailProps } from "@/lib/whatsapp";
 import type { Plan } from "@/db/schema";
 
 const tokenAlphabet = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 32);
@@ -102,6 +103,7 @@ export async function runReviewRequestCron() {
         destinationName,
         token,
         siteUrl,
+        ...(await getWhatsAppEmailProps()),
       })
     );
 

@@ -17,6 +17,9 @@ interface ReviewRequestEmailProps {
   destinationName: string;
   token: string;
   siteUrl: string;
+  supportEmail?: string;
+  whatsappUrl?: string;
+  whatsappDisplay?: string;
 }
 
 function starLink(siteUrl: string, token: string, rating: number) {
@@ -28,6 +31,9 @@ export function ReviewRequestEmail({
   destinationName,
   token,
   siteUrl,
+  supportEmail,
+  whatsappUrl,
+  whatsappDisplay,
 }: ReviewRequestEmailProps) {
   const firstName = customerName.split(" ")[0];
 
@@ -54,6 +60,24 @@ export function ReviewRequestEmail({
           <Button style={button} href={`${siteUrl}/avaliar/${token}`}>
             Deixar minha avaliação
           </Button>
+          {(supportEmail || whatsappUrl) && (
+            <Section style={supportBox}>
+              <Text style={supportTitle}>Precisa de ajuda?</Text>
+              {supportEmail && (
+                <Text style={text}>
+                  E-mail: <Link href={`mailto:${supportEmail}`}>{supportEmail}</Link>
+                </Text>
+              )}
+              {whatsappUrl && whatsappDisplay && (
+                <Text style={text}>
+                  WhatsApp:{" "}
+                  <Link href={whatsappUrl} style={{ color: "#25D366" }}>
+                    {whatsappDisplay}
+                  </Link>
+                </Text>
+              )}
+            </Section>
+          )}
           <Hr style={hr} />
           <Text style={footer}>ChipViagem — Altivia CNPJ 63.101.423/0001-18</Text>
         </Container>
@@ -89,5 +113,13 @@ const button = {
 };
 const hr = { borderColor: "#e2e8f0", margin: "24px 0" };
 const footer = { color: "#94a3b8", fontSize: "12px" };
+const supportBox = {
+  marginTop: "24px",
+  padding: "16px",
+  backgroundColor: "#f8fafc",
+  borderRadius: "8px",
+  border: "1px solid #e2e8f0",
+};
+const supportTitle = { color: "#334155", fontSize: "14px", fontWeight: "bold" as const, margin: "0 0 8px" };
 
 export default ReviewRequestEmail;

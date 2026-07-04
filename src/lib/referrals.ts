@@ -3,6 +3,7 @@ import { customAlphabet } from "nanoid";
 import { db } from "@/db";
 import { coupons, orders, referrals } from "@/db/schema";
 import { sendReferralRewardEmail } from "@/lib/email";
+import { getWhatsAppEmailProps } from "@/lib/whatsapp";
 import { render } from "@react-email/render";
 import { ReferralRewardEmail } from "../../emails/referral-reward";
 
@@ -211,6 +212,7 @@ export async function processReferralConversion(friendOrderId: string) {
       rewardCode,
       rewardValue: REFERRAL_REWARD_BRL,
       siteUrl,
+      ...(await getWhatsAppEmailProps()),
     })
   );
 

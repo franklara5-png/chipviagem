@@ -6,6 +6,7 @@ import { adminUsers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword, requireAdmin, verifyPassword } from "@/lib/auth";
 import { setSetting } from "@/lib/settings";
+import { isValidE164, normalizeE164 } from "@/lib/whatsapp";
 
 async function ensureAdmin() {
   const admin = await requireAdmin();
@@ -21,12 +22,19 @@ export async function updateSettingsAction(formData: FormData) {
   const autoReprice = formData.get("auto_reprice_enabled") === "on" ? "true" : "false";
   const usdRate = formData.get("usd_brl_rate")?.toString();
   const supportEmail = formData.get("support_email")?.toString();
+  const whatsappRaw = formData.get("whatsapp_number")?.toString() ?? "";
 
   if (defaultMargin) await setSetting("default_margin_percent", defaultMargin);
   if (minMargin) await setSetting("min_margin_percent", minMargin);
   await setSetting("auto_reprice_enabled", autoReprice);
   if (usdRate) await setSetting("usd_brl_rate", usdRate);
   if (supportEmail) await setSetting("support_email", supportEmail);
+
+  const whatsappNumber = normalizeE164(whatsappRaw);
+  if (whatsappNumber && !isValidE164(whatsappNumber)) {
+    throw new Error("WhatsApp deve estar no formato E.164 (ex: +5511999999999)");
+  }
+  await setSetting("whatsapp_number", whatsappNumber);
 
   revalidatePath("/admin/config");
 }

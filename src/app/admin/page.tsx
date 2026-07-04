@@ -8,6 +8,7 @@ import { getAtRiskPlans } from "@/lib/margin-sync";
 import { getLatestExchangeRate } from "@/lib/exchange-rate";
 import { getReviewStats } from "@/lib/reviews";
 import { getReferralStats30d } from "@/lib/referrals";
+import { getWhatsAppClicks7d } from "@/lib/analytics";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { AlertTriangle } from "lucide-react";
 
@@ -69,6 +70,7 @@ export default async function AdminDashboardPage() {
   const atRiskPlans = await getAtRiskPlans();
   const reviewStats = await getReviewStats();
   const referralStats = await getReferralStats30d();
+  const whatsappClicks7d = await getWhatsAppClicks7d();
 
   const salesPerDay = await db
     .select({
@@ -148,6 +150,7 @@ export default async function AdminDashboardPage() {
           label="Vendas por indicação (30d)"
           value={`${referralStats.conversions30d} · ${formatBrl(referralStats.revenue30d)}`}
         />
+        <StatCard label="Cliques no WhatsApp (7d)" value={String(whatsappClicks7d)} />
       </div>
 
       {reviewStats.pendingModeration > 0 && (

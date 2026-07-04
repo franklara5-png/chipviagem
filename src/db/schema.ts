@@ -122,6 +122,13 @@ export const webhookEvents = pgTable("webhook_events", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const analyticsEvents = pgTable("analytics_events", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  event: text("event").notNull(),
+  path: text("path").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const exchangeRates = pgTable("exchange_rates", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   rate: numeric("rate", { precision: 10, scale: 4 }).notNull(),
@@ -233,6 +240,7 @@ export type Destination = typeof destinations.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
 export type ExchangeRate = typeof exchangeRates.$inferSelect;
 export type PriceChange = typeof priceChanges.$inferSelect;
 export type Review = typeof reviews.$inferSelect;

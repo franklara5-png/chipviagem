@@ -1,6 +1,12 @@
 import { PublicLayout } from "@/components/layout/public-layout";
 import { getSeoMetadata } from "@/lib/seo";
 import { getSetting } from "@/lib/settings";
+import {
+  buildWhatsAppUrl,
+  formatWhatsAppDisplay,
+  isValidE164,
+  normalizeE164,
+} from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +18,12 @@ export const metadata = getSeoMetadata({
 
 export default async function SuportePage() {
   const supportEmail = await getSetting("support_email").catch(() => "suporte@chipviagem.com.br");
+  const whatsappRaw = await getSetting("whatsapp_number").catch(() => "");
+  const whatsappNumber = normalizeE164(whatsappRaw);
+  const hasWhatsApp = isValidE164(whatsappNumber);
+  const whatsappUrl = hasWhatsApp
+    ? buildWhatsAppUrl(whatsappNumber, "Olá! Vim do site ChipViagem e tenho uma dúvida")
+    : "";
 
   return (
     <PublicLayout>
@@ -21,12 +33,31 @@ export default async function SuportePage() {
           Nossa equipe está pronta para ajudar com instalação, ativação e qualquer dúvida sobre seu eSIM.
         </p>
 
-        <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="font-semibold text-ink">E-mail</h2>
-          <a href={`mailto:${supportEmail}`} className="mt-2 block text-primary hover:underline">
-            {supportEmail}
-          </a>
-          <p className="mt-4 text-sm text-slate-500">Respondemos em até 24 horas úteis.</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {hasWhatsApp && (
+            <div className="rounded-xl border border-green-200 bg-green-50 p-6">
+              <h2 className="font-semibold text-ink">WhatsApp</h2>
+              <p className="mt-1 text-sm text-slate-600">Atendimento mais rápido — resposta em minutos.</p>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+                style={{ backgroundColor: "#25D366" }}
+              >
+                Chamar no WhatsApp
+              </a>
+              <p className="mt-2 text-sm text-slate-500">{formatWhatsAppDisplay(whatsappNumber)}</p>
+            </div>
+          )}
+
+          <div className="rounded-xl border border-slate-200 bg-white p-6">
+            <h2 className="font-semibold text-ink">E-mail</h2>
+            <a href={`mailto:${supportEmail}`} className="mt-2 block text-primary hover:underline">
+              {supportEmail}
+            </a>
+            <p className="mt-4 text-sm text-slate-500">Respondemos em até 24 horas úteis.</p>
+          </div>
         </div>
 
         <div className="mt-8 space-y-4">

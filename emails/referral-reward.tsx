@@ -6,6 +6,7 @@ import {
   Heading,
   Hr,
   Html,
+  Link,
   Preview,
   Section,
   Text,
@@ -16,6 +17,9 @@ interface ReferralRewardEmailProps {
   rewardCode: string;
   rewardValue: number;
   siteUrl: string;
+  supportEmail?: string;
+  whatsappUrl?: string;
+  whatsappDisplay?: string;
 }
 
 export function ReferralRewardEmail({
@@ -23,6 +27,9 @@ export function ReferralRewardEmail({
   rewardCode,
   rewardValue,
   siteUrl,
+  supportEmail,
+  whatsappUrl,
+  whatsappDisplay,
 }: ReferralRewardEmailProps) {
   const firstName = referrerName.split(" ")[0];
 
@@ -54,6 +61,25 @@ export function ReferralRewardEmail({
           <Text style={small}>
             Válido para pedidos a partir de R$ 39,00. Uso único.
           </Text>
+
+          {(supportEmail || whatsappUrl) && (
+            <Section style={supportBox}>
+              <Text style={supportTitle}>Dúvidas?</Text>
+              {supportEmail && (
+                <Text style={text}>
+                  E-mail: <Link href={`mailto:${supportEmail}`}>{supportEmail}</Link>
+                </Text>
+              )}
+              {whatsappUrl && whatsappDisplay && (
+                <Text style={text}>
+                  WhatsApp:{" "}
+                  <Link href={whatsappUrl} style={{ color: "#25D366" }}>
+                    {whatsappDisplay}
+                  </Link>
+                </Text>
+              )}
+            </Section>
+          )}
 
           <Hr style={hr} />
           <Text style={footer}>ChipViagem — Altivia CNPJ 63.101.423/0001-18</Text>
@@ -87,3 +113,11 @@ const button = {
 const small = { color: "#94a3b8", fontSize: "12px", marginTop: "16px" };
 const hr = { borderColor: "#e2e8f0", margin: "24px 0" };
 const footer = { color: "#94a3b8", fontSize: "12px" };
+const supportBox = {
+  marginTop: "24px",
+  padding: "16px",
+  backgroundColor: "#f8fafc",
+  borderRadius: "8px",
+  border: "1px solid #e2e8f0",
+};
+const supportTitle = { color: "#334155", fontSize: "14px", fontWeight: "bold" as const, margin: "0 0 8px" };

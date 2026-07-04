@@ -83,6 +83,22 @@ export default async function ConfigPage() {
               className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             />
           </div>
+          <div>
+            <label htmlFor="whatsapp_number" className="block text-sm text-slate-700">
+              WhatsApp (E.164)
+            </label>
+            <input
+              id="whatsapp_number"
+              name="whatsapp_number"
+              type="tel"
+              placeholder="+5511999999999"
+              defaultValue={settings.whatsapp_number}
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            />
+            <p className="mt-1 text-xs text-slate-500">
+              Formato internacional com DDI. Exibe o botão flutuante em todas as páginas públicas.
+            </p>
+          </div>
           <button
             type="submit"
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
