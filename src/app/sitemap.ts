@@ -8,7 +8,7 @@ import { getSiteUrl } from "@/lib/seo";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl();
   const staticPages = [
-    "", "/planos", "/como-funciona", "/suporte", "/blog", "/termos", "/privacidade",
+    "", "/planos", "/quantos-gb-preciso", "/como-funciona", "/suporte", "/blog", "/termos", "/privacidade",
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: new Date(),

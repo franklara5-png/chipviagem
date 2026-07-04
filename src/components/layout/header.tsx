@@ -3,6 +3,7 @@ import { Logo } from "@/components/logo";
 
 const navLinks = [
   { href: "/planos", label: "Planos" },
+  { href: "/quantos-gb-preciso", label: "Calculadora GB" },
   { href: "/como-funciona", label: "Como funciona" },
   { href: "/blog", label: "Blog" },
   { href: "/suporte", label: "Suporte" },

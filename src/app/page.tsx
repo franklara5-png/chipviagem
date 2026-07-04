@@ -118,6 +118,25 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Calculadora GB */}
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 md:flex md:items-center md:justify-between md:gap-8">
+          <div className="md:max-w-lg">
+            <h2 className="text-2xl font-bold text-ink">Não sabe quantos GB contratar?</h2>
+            <p className="mt-2 text-slate-600">
+              Use nossa calculadora gratuita: informe os dias de viagem e seus hábitos de uso.
+              Receba uma estimativa com margem de segurança e planos recomendados.
+            </p>
+          </div>
+          <Link
+            href="/quantos-gb-preciso"
+            className="mt-6 inline-block rounded-xl bg-primary px-8 py-4 font-semibold text-white transition hover:bg-primary-dark md:mt-0 md:shrink-0"
+          >
+            Calcular meus GB
+          </Link>
+        </div>
+      </section>
+
       {/* Planos em destaque */}
       {featuredPlans.length > 0 && (
         <section className="bg-white px-4 py-12">

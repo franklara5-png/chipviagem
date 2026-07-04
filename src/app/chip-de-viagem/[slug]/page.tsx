@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { PlanCard } from "@/components/plan-card";
 import { FaqSection } from "@/components/faq-section";
@@ -130,7 +131,15 @@ export default async function DestinationPage({ params }: PageProps) {
       )}
 
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="mb-6 text-2xl font-bold text-ink">Planos disponíveis</h2>
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-2xl font-bold text-ink">Planos disponíveis</h2>
+          <Link
+            href={`/quantos-gb-preciso?destino=${slug}`}
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Não sabe quanto contratar? Use a calculadora →
+          </Link>
+        </div>
         {countryPlans.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {countryPlans.map((plan) => (
