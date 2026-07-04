@@ -33,6 +33,7 @@ export const plans = pgTable("plans", {
   wholesalePriceUsd: numeric("wholesale_price_usd", { precision: 10, scale: 2 }).notNull(),
   retailPriceBrl: numeric("retail_price_brl", { precision: 10, scale: 2 }).notNull(),
   marginPercent: numeric("margin_percent", { precision: 5, scale: 2 }),
+  currentMarginPercent: numeric("current_margin_percent", { precision: 5, scale: 2 }),
   isActive: boolean("is_active").notNull().default(true),
   isFeatured: boolean("is_featured").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -113,6 +114,28 @@ export const webhookEvents = pgTable("webhook_events", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const exchangeRates = pgTable("exchange_rates", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  rate: numeric("rate", { precision: 10, scale: 4 }).notNull(),
+  source: text("source").notNull(),
+  fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
+});
+
+export const priceChanges = pgTable("price_changes", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  planId: text("plan_id")
+    .notNull()
+    .references(() => plans.id),
+  oldPrice: numeric("old_price", { precision: 10, scale: 2 }).notNull(),
+  newPrice: numeric("new_price", { precision: 10, scale: 2 }).notNull(),
+  reason: text("reason").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const priceChangesRelations = relations(priceChanges, ({ one }) => ({
+  plan: one(plans, { fields: [priceChanges.planId], references: [plans.id] }),
+}));
+
 export const plansRelations = relations(plans, ({ many }) => ({
   orders: many(orders),
 }));
@@ -133,3 +156,5 @@ export type Destination = typeof destinations.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
+export type ExchangeRate = typeof exchangeRates.$inferSelect;
+export type PriceChange = typeof priceChanges.$inferSelect;

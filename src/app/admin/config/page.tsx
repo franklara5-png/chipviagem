@@ -17,8 +17,37 @@ export default async function ConfigPage() {
         <h2 className="mb-4 text-sm font-medium text-slate-600">Configurações gerais</h2>
         <form action={updateSettingsAction} className="max-w-md space-y-4">
           <div>
+            <label htmlFor="min_margin_percent" className="block text-sm text-slate-700">
+              Margem mínima (%)
+            </label>
+            <input
+              id="min_margin_percent"
+              name="min_margin_percent"
+              type="number"
+              step="0.1"
+              defaultValue={settings.min_margin_percent}
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            />
+            <p className="mt-1 text-xs text-slate-500">
+              Planos abaixo disso ficam em vermelho no admin e disparam alerta por e-mail.
+            </p>
+          </div>
+          <div>
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="auto_reprice_enabled"
+                defaultChecked={settings.auto_reprice_enabled === "true"}
+              />
+              Reajuste automático de preços
+            </label>
+            <p className="mt-1 text-xs text-slate-500">
+              No cron diário, planos em risco são reajustados para margem mínima + 5pp (preço ,90).
+            </p>
+          </div>
+          <div>
             <label htmlFor="default_margin_percent" className="block text-sm text-slate-700">
-              Margem padrão (%)
+              Margem padrão ao importar (%)
             </label>
             <input
               id="default_margin_percent"
@@ -31,7 +60,7 @@ export default async function ConfigPage() {
           </div>
           <div>
             <label htmlFor="usd_brl_rate" className="block text-sm text-slate-700">
-              Câmbio USD/BRL
+              Câmbio USD/BRL (fallback manual)
             </label>
             <input
               id="usd_brl_rate"

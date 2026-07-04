@@ -4,6 +4,8 @@ import { orders, plans } from "@/db/schema";
 import { and, count, desc, eq, gte, inArray, sql, sum } from "drizzle-orm";
 import { formatBrl } from "@/lib/utils";
 import { getSetting } from "@/lib/settings";
+import { getAtRiskPlans } from "@/lib/margin-sync";
+import { getLatestExchangeRate } from "@/lib/exchange-rate";
 import { SalesChart } from "@/components/admin/sales-chart";
 import { AlertTriangle } from "lucide-react";
 
@@ -60,7 +62,9 @@ export default async function AdminDashboardPage() {
     .from(orders)
     .where(eq(orders.status, "failed"));
 
-  const defaultMargin = await getSetting("default_margin_percent");
+  const minMargin = await getSetting("min_margin_percent");
+  const usdRate = await getLatestExchangeRate();
+  const atRiskPlans = await getAtRiskPlans();
 
   const salesPerDay = await db
     .select({
@@ -96,6 +100,18 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-ink">Dashboard</h1>
 
+      {atRiskPlans.length > 0 && (
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
+          <AlertTriangle className="h-5 w-5 shrink-0" />
+          <p className="text-sm">
+            {atRiskPlans.length} plano(s) com margem abaixo de {minMargin}% (cotação USD {usdRate.toFixed(4)}).{" "}
+            <Link href="/admin/planos?risco=1" className="underline">
+              Ver planos em risco
+            </Link>
+          </p>
+        </div>
+      )}
+
       {Number(failedCount?.total ?? 0) > 0 && (
         <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
           <AlertTriangle className="h-5 w-5 shrink-0" />
@@ -114,7 +130,8 @@ export default async function AdminDashboardPage() {
         <StatCard label="Pedidos 7 dias" value={String(orders7d?.total ?? 0)} />
         <StatCard label="Pedidos 30 dias" value={String(orders30d?.total ?? 0)} />
         <StatCard label="Ticket médio" value={formatBrl(parseFloat(avgTicket?.avg ?? "0"))} />
-        <StatCard label="Margem padrão" value={`${defaultMargin}%`} />
+        <StatCard label="Margem mínima" value={`${minMargin}%`} />
+        <StatCard label="USD/BRL" value={usdRate.toFixed(4)} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

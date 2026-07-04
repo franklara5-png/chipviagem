@@ -17,10 +17,14 @@ export async function updateSettingsAction(formData: FormData) {
   await ensureAdmin();
 
   const defaultMargin = formData.get("default_margin_percent")?.toString();
+  const minMargin = formData.get("min_margin_percent")?.toString();
+  const autoReprice = formData.get("auto_reprice_enabled") === "on" ? "true" : "false";
   const usdRate = formData.get("usd_brl_rate")?.toString();
   const supportEmail = formData.get("support_email")?.toString();
 
   if (defaultMargin) await setSetting("default_margin_percent", defaultMargin);
+  if (minMargin) await setSetting("min_margin_percent", minMargin);
+  await setSetting("auto_reprice_enabled", autoReprice);
   if (usdRate) await setSetting("usd_brl_rate", usdRate);
   if (supportEmail) await setSetting("support_email", supportEmail);
 

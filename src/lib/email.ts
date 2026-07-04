@@ -38,3 +38,61 @@ export async function sendEsimEmail(data: {
     html,
   });
 }
+
+export async function sendMarginAlertEmail(data: {
+  to: string;
+  minMarginPercent: number;
+  usdRate: number;
+  plans: {
+    planName: string;
+    retailPriceBrl: number;
+    currentMargin: number;
+    suggestedPrice: number;
+  }[];
+}) {
+  const rows = data.plans
+    .map(
+      (p) =>
+        `<tr>
+          <td style="padding:8px;border-bottom:1px solid #eee">${p.planName}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee">R$ ${p.retailPriceBrl.toFixed(2)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;color:#dc2626">${p.currentMargin.toFixed(1)}%</td>
+          <td style="padding:8px;border-bottom:1px solid #eee">R$ ${p.suggestedPrice.toFixed(2)}</td>
+        </tr>`
+    )
+    .join("");
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:640px;margin:0 auto">
+      <h1 style="color:#0EA5E9">ChipViagem — Alerta de margem</h1>
+      <p><strong>${data.plans.length}</strong> plano(s) com margem abaixo de <strong>${data.minMarginPercent}%</strong>.</p>
+      <p>Cotação USD/BRL usada: <strong>${data.usdRate.toFixed(4)}</strong></p>
+      <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+        <thead>
+          <tr style="background:#f8fafc">
+            <th style="padding:8px;text-align:left">Plano</th>
+            <th style="padding:8px;text-align:left">Preço atual</th>
+            <th style="padding:8px;text-align:left">Margem</th>
+            <th style="padding:8px;text-align:left">Preço sugerido</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br"}/admin/planos?risco=1">Ver planos em risco no admin</a></p>
+      <hr/>
+      <p style="color:#666;font-size:12px">ChipViagem — Altivia CNPJ 63.101.423/0001-18</p>
+    </div>
+  `;
+
+  if (!resend) {
+    console.log("[DEV] Alerta de margem não enviado:", { count: data.plans.length, to: data.to });
+    return { id: "dev-mock" };
+  }
+
+  return resend.emails.send({
+    from: "ChipViagem <noreply@chipviagem.com.br>",
+    to: data.to,
+    subject: `⚠️ ${data.plans.length} plano(s) com margem abaixo de ${data.minMarginPercent}%`,
+    html,
+  });
+}

@@ -4,6 +4,8 @@ import { eq } from "drizzle-orm";
 
 const DEFAULTS: Record<string, string> = {
   default_margin_percent: "40",
+  min_margin_percent: "25",
+  auto_reprice_enabled: "false",
   usd_brl_rate: "5.50",
   support_email: "suporte@chipviagem.com.br",
 };

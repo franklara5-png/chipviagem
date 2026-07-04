@@ -11,6 +11,8 @@ import {
   getSetting,
   suggestRetailPrice,
 } from "@/lib/settings";
+import { getLatestExchangeRate } from "@/lib/exchange-rate";
+import { calculateCurrentMarginPercent } from "@/lib/margin";
 import { slugify } from "@/lib/utils";
 
 async function ensureAdmin() {
@@ -24,13 +26,14 @@ export async function syncCatalogAction() {
   const provider = getProvider();
   const catalog = await provider.getCatalog();
   const providerName = process.env.ESIM_PROVIDER ?? "mock";
-  const usdRate = parseFloat(await getSetting("usd_brl_rate"));
+  const usdRate = await getLatestExchangeRate();
   const defaultMargin = parseFloat(await getSetting("default_margin_percent"));
 
   for (const item of catalog) {
     const slug = slugify(item.name);
     const retailPrice = suggestRetailPrice(item.wholesalePriceUsd, usdRate, defaultMargin);
     const margin = calculateMarginPercent(retailPrice, item.wholesalePriceUsd, usdRate);
+    const currentMargin = calculateCurrentMarginPercent(retailPrice, item.wholesalePriceUsd, usdRate);
 
     const [existing] = await db
       .select()
@@ -64,6 +67,7 @@ export async function syncCatalogAction() {
         wholesalePriceUsd: item.wholesalePriceUsd.toFixed(2),
         retailPriceBrl: retailPrice.toFixed(2),
         marginPercent: margin.toFixed(2),
+        currentMarginPercent: currentMargin.toFixed(2),
       });
     }
   }
@@ -84,16 +88,18 @@ export async function updatePlanAction(formData: FormData) {
   const [plan] = await db.select().from(plans).where(eq(plans.id, id)).limit(1);
   if (!plan) throw new Error("Plano não encontrado");
 
-  const usdRate = parseFloat(await getSetting("usd_brl_rate"));
+  const usdRate = await getLatestExchangeRate();
   const retail = retailPriceBrl ? parseFloat(retailPriceBrl) : parseFloat(plan.retailPriceBrl);
   const wholesale = parseFloat(plan.wholesalePriceUsd);
   const margin = calculateMarginPercent(retail, wholesale, usdRate);
+  const currentMargin = calculateCurrentMarginPercent(retail, wholesale, usdRate);
 
   await db
     .update(plans)
     .set({
       retailPriceBrl: retail.toFixed(2),
       marginPercent: margin.toFixed(2),
+      currentMarginPercent: currentMargin.toFixed(2),
       isActive,
       isFeatured,
       updatedAt: new Date(),

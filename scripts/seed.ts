@@ -87,6 +87,8 @@ async function seed() {
 
   const settings = [
     { key: "default_margin_percent", value: marginPercent.toString() },
+    { key: "min_margin_percent", value: process.env.MIN_MARGIN_PERCENT ?? "25" },
+    { key: "auto_reprice_enabled", value: "false" },
     { key: "usd_brl_rate", value: usdRate.toString() },
     { key: "support_email", value: "suporte@chipviagem.com.br" },
   ];
