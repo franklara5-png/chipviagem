@@ -7,7 +7,7 @@ import { getSeoMetadata } from "@/lib/seo";
 export const metadata = getSeoMetadata({
   title: "Comparativo de Chip de Viagem | Qual o Melhor?",
   description:
-    "Compare os melhores chips de viagem (eSIM) de 2026: preço, cobertura, velocidade e benefícios. Descubra qual o melhor eSIM para sua próxima viagem.",
+    "Compare os melhores chips de viagem (eSIM) de 2026: preço, cobertura e velocidade. Descubra qual o melhor eSIM para sua próxima viagem.",
   path: "/comparativo-chip-viagem",
 });
 

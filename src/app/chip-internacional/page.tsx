@@ -7,7 +7,7 @@ import { getSeoMetadata } from "@/lib/seo";
 export const metadata = getSeoMetadata({
   title: "Chip Internacional | eSIM para Qualquer País",
   description:
-    "Chip internacional (eSIM) com cobertura em mais de 100 países. Internet rápida, entrega imediata e pagamento via Pix. Viaje conectado com a ChipViagem.",
+    "Chip internacional (eSIM) com cobertura em 100+ países. Internet rápida, entrega imediata e pagamento via Pix. Viaje conectado com a ChipViagem.",
   path: "/chip-internacional",
 });
 

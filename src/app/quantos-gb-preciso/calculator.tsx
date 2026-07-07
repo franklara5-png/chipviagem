@@ -17,6 +17,8 @@ import {
 import { recommendPlans, costPerGb, type PlanSummary } from "@/lib/plan-recommendations";
 import { formatBrl, formatDataMb } from "@/lib/utils";
 import { Copy, Check } from "lucide-react";
+import { usePageAssist } from "@/components/page-assist-context";
+import { AiChatCalculatorButton } from "@/components/ai-chat-widget";
 
 interface CalculatorProps {
   plans: PlanSummary[];
@@ -79,6 +81,7 @@ function DataGauge({ mb, maxMb }: { mb: number; maxMb: number }) {
 export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pageAssist = usePageAssist();
 
   const initial = parseFromParams(searchParams);
   const [days, setDays] = useState(initial.days);
@@ -112,6 +115,26 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
   );
 
   const maxGaugeMb = Math.max(totalMb * 1.2, 10 * 1024);
+
+  useEffect(() => {
+    if (!pageAssist) return;
+    pageAssist.setCalculator({
+      days,
+      estimatedGb: mbToGb(totalMb),
+      dailyMb,
+      habits,
+      destinoName,
+      recommendedPlans: recommended.map((p) => ({
+        name: p.name,
+        slug: p.slug,
+        dataAmountMb: p.dataAmountMb,
+        validityDays: p.validityDays,
+        retailPriceBrl: p.retailPriceBrl,
+        region: p.region,
+      })),
+    });
+    return () => pageAssist.setCalculator(null);
+  }, [pageAssist, days, totalMb, dailyMb, habits, destinoName, recommended]);
 
   function updateDays(d: number) {
     setDays(d);
@@ -206,6 +229,8 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? "Link copiado!" : "Copiar link para compartilhar com o grupo"}
         </button>
+
+        <AiChatCalculatorButton />
       </div>
 
       {recommended.length > 0 && (
