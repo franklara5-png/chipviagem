@@ -28,6 +28,8 @@ declare global {
 
 interface CheckoutFormProps {
   plan: Plan;
+  defaultName?: string;
+  defaultEmail?: string;
 }
 
 type PaymentMethod = "pix" | "card";
@@ -39,7 +41,7 @@ interface PixData {
   expirationDate: string;
 }
 
-export function CheckoutForm({ plan }: CheckoutFormProps) {
+export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormProps) {
   const router = useRouter();
   const turnstileRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -54,8 +56,8 @@ export function CheckoutForm({ plan }: CheckoutFormProps) {
   const [pixData, setPixData] = useState<PixData | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(defaultName ?? "");
+  const [email, setEmail] = useState(defaultEmail ?? "");
   const [cpf, setCpf] = useState("");
   const [cardHolder, setCardHolder] = useState("");
   const [cardNumber, setCardNumber] = useState("");

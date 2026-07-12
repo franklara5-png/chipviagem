@@ -4,6 +4,7 @@ import { PublicLayout } from "@/components/layout/public-layout";
 import { db } from "@/db";
 import { plans } from "@/db/schema";
 import { formatBrl, formatDataMb } from "@/lib/utils";
+import { getSession } from "@/lib/get-session";
 import { CheckoutForm } from "./checkout-form";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,11 @@ interface CheckoutPageProps {
 
 export default async function CheckoutPage({ params }: CheckoutPageProps) {
   const { planSlug } = await params;
+
+  // Sessão opcional — pré-preenche nome/email
+  const session = await getSession().catch(() => null);
+  const defaultName = session?.user?.name;
+  const defaultEmail = session?.user?.email;
 
   const [plan] = await db
     .select()
@@ -39,7 +45,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
           </div>
         </div>
 
-        <CheckoutForm plan={plan} />
+        <CheckoutForm plan={plan} defaultName={defaultName} defaultEmail={defaultEmail} />
       </div>
     </PublicLayout>
   );

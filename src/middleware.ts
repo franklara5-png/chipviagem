@@ -49,6 +49,17 @@ async function attachAcquisitionCookie(request: NextRequest, response: NextRespo
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // ─── Painel do cliente (Better Auth) — otimista, só cookie ────────────
+  if (pathname === "/painel" || pathname.startsWith("/painel/")) {
+    const sessionToken = request.cookies.get("better-auth.session_token")?.value;
+    if (!sessionToken) {
+      const login = new URL("/login", request.url);
+      login.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(login);
+    }
+    return NextResponse.next();
+  }
+
   if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
     if (!token) {

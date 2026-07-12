@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { UserMenu } from "@/components/UserMenu";
 
 const navLinks = [
   { href: "/planos", label: "Planos" },
@@ -33,6 +34,7 @@ export function Header() {
         >
           Ver planos
         </Link>
+        <UserMenu />
       </div>
     </header>
   );
