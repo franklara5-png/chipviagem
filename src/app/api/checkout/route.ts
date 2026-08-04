@@ -40,6 +40,8 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // TODO: reintroduzir Turnstile (ou equivalente) como proteção anti-bot
+  //       — presente em todos os sites da Altivia, removido para padronização.
   try {
     const body = checkoutSchema.parse(await request.json());
 
