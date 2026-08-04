@@ -11,7 +11,7 @@ import { destinations, plans } from "@/db/schema";
 import { getPlanFilterForDestination } from "@/lib/destinations/plan-filter";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { getSeoMetadata } from "@/lib/seo";
+import { getSeoMetadata, getSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -69,13 +69,16 @@ export default async function DestinationPage({ params }: PageProps) {
     ? await db.select().from(plans).where(planFilter)
     : [];
 
+  const siteUrl = getSiteUrl();
   const productJsonLdBase = countryPlans.map((plan) => ({
     "@context": "https://schema.org",
     "@type": "Product",
     name: plan.name,
     description: `eSIM ${plan.name} — ${plan.dataAmountMb}MB por ${plan.validityDays} dias`,
+    url: `${siteUrl}/checkout/${plan.slug}`,
     offers: {
       "@type": "Offer",
+      url: `${siteUrl}/checkout/${plan.slug}`,
       price: plan.retailPriceBrl,
       priceCurrency: "BRL",
       availability: "https://schema.org/InStock",

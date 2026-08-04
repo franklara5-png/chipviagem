@@ -1,30 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import Script from "next/script";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatBrl, formatCpf, formatDataMb } from "@/lib/utils";
 import type { Plan } from "@/db/schema";
 import { getRefFromCookie } from "@/components/ref-cookie-handler";
 import { REFERRAL_FRIEND_DISCOUNT_BRL } from "@/lib/referrals";
-
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: {
-          sitekey: string;
-          callback: (token: string) => void;
-          "expired-callback"?: () => void;
-          "error-callback"?: () => void;
-        }
-      ) => string;
-      reset: (widgetId: string) => void;
-      remove: (widgetId: string) => void;
-    };
-  }
-}
 
 interface CheckoutFormProps {
   plan: Plan;
@@ -43,13 +24,9 @@ interface PixData {
 
 export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormProps) {
   const router = useRouter();
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
 
   const [step, setStep] = useState<Step>("form");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileReady, setTurnstileReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [publicId, setPublicId] = useState<string | null>(null);
@@ -81,28 +58,6 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
   const retailPrice = parseFloat(plan.retailPriceBrl);
   const finalPrice = appliedCoupon?.finalAmountBrl ?? retailPrice;
   const discountAmount = appliedCoupon?.discountBrl ?? 0;
-
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-
-  const renderTurnstile = useCallback(() => {
-    if (!turnstileReady || !turnstileRef.current || !siteKey || !window.turnstile) return;
-
-    if (widgetIdRef.current) {
-      window.turnstile.remove(widgetIdRef.current);
-      widgetIdRef.current = null;
-    }
-
-    widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-      sitekey: siteKey,
-      callback: (token) => setTurnstileToken(token),
-      "expired-callback": () => setTurnstileToken(""),
-      "error-callback": () => setTurnstileToken(""),
-    });
-  }, [turnstileReady, siteKey]);
-
-  useEffect(() => {
-    renderTurnstile();
-  }, [renderTurnstile]);
 
   const applyCoupon = useCallback(
     async (code: string, silent = false) => {
@@ -193,7 +148,6 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
         customerEmail: email,
         customerCpf: cpf.replace(/\D/g, ""),
         paymentMethod,
-        turnstileToken,
       };
 
       if (appliedCoupon) {
@@ -238,10 +192,6 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro inesperado");
-      setTurnstileToken("");
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.reset(widgetIdRef.current);
-      }
     } finally {
       setLoading(false);
     }
@@ -318,14 +268,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
   }
 
   return (
-    <>
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-        strategy="afterInteractive"
-        onLoad={() => setTurnstileReady(true)}
-      />
-
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">Seus dados</h2>
 
@@ -601,8 +544,6 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           </p>
         </div>
 
-        {siteKey && <div ref={turnstileRef} className="flex justify-center" />}
-
         {error && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
@@ -611,12 +552,11 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
 
         <button
           type="submit"
-          disabled={loading || (!!siteKey && !turnstileToken)}
+          disabled={loading}
           className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Processando…" : paymentMethod === "pix" ? "Gerar PIX" : "Pagar com cartão"}
         </button>
       </form>
-    </>
   );
 }

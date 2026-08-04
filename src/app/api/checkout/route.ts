@@ -10,7 +10,6 @@ import {
   getPixQrCode,
   tokenizeCreditCard,
 } from "@/lib/asaas";
-import { verifyTurnstile } from "@/lib/turnstile";
 import { generateNanoid, validateCpf } from "@/lib/utils";
 import { validateCoupon } from "@/lib/coupons";
 import { getAcquisitionFromRequest } from "@/lib/acquisition";
@@ -21,7 +20,6 @@ const checkoutSchema = z.object({
   customerEmail: z.string().email(),
   customerCpf: z.string().min(11).max(14),
   paymentMethod: z.enum(["pix", "card"]),
-  turnstileToken: z.string().min(1),
   couponCode: z.string().optional(),
   creditCard: z
     .object({
@@ -44,11 +42,6 @@ const checkoutSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = checkoutSchema.parse(await request.json());
-
-    const turnstileValid = await verifyTurnstile(body.turnstileToken);
-    if (!turnstileValid) {
-      return NextResponse.json({ error: "Verificação de segurança falhou" }, { status: 403 });
-    }
 
     if (!validateCpf(body.customerCpf)) {
       return NextResponse.json({ error: "CPF inválido" }, { status: 400 });

@@ -1,9 +1,30 @@
 import type { Metadata } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br";
+/** Domínio canônico de produção — nunca usar .vercel.app em SEO. */
+export const PRODUCTION_SITE_URL = "https://chipviagem.com.br";
+
 const SITE_NAME = "ChipViagem";
 const DEFAULT_DESCRIPTION =
   "Compre chip de viagem (eSIM) com entrega imediata. Pagamento via Pix, suporte em português. Conectado em qualquer lugar do mundo.";
+
+/**
+ * Resolve a URL pública do site.
+ * Em produção (ou se a env apontar para vercel.app), força o domínio canônico.
+ * Em local/preview com localhost, mantém a env para links de e-mail/dev.
+ */
+function resolveSiteUrl(): string {
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim().replace(/\/$/, "");
+  const isVercelApp = raw.includes("vercel.app");
+  const isLocalhost = /localhost|127\.0\.0\.1/.test(raw);
+  const isProduction = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+
+  if (!raw || isVercelApp || (isProduction && isLocalhost)) {
+    return PRODUCTION_SITE_URL;
+  }
+  return raw;
+}
+
+const SITE_URL = resolveSiteUrl();
 
 export interface SeoOptions {
   title?: string;
@@ -26,6 +47,8 @@ export function getSeoMetadata(options: SeoOptions = {}): Metadata {
 
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Conectado em qualquer lugar do mundo.`;
   const canonical = `${SITE_URL}${path}`;
+  // OG/Twitter images: caminho relativo resolvido via metadataBase → URL absoluta
+  const absoluteOgImage = ogImage.startsWith("http") ? ogImage : `${SITE_URL}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`;
 
   return {
     title: fullTitle,
@@ -39,13 +62,13 @@ export function getSeoMetadata(options: SeoOptions = {}): Metadata {
       siteName: SITE_NAME,
       locale: "pt_BR",
       type: "website",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE_NAME }],
+      images: [{ url: absoluteOgImage, width: 1200, height: 630, alt: SITE_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [ogImage],
+      images: [absoluteOgImage],
     },
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
     other: jsonLd

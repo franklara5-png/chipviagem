@@ -5,7 +5,7 @@ import { PublicLayout } from "@/components/layout/public-layout";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedDestinations } from "@/components/blog-related-destinations";
 import { getBlogPost, getBlogPosts } from "@/lib/mdx";
-import { getSeoMetadata } from "@/lib/seo";
+import { getSeoMetadata, getSiteUrl } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -45,14 +45,21 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const headings = extractHeadings(post.content);
 
+  const pageUrl = `${getSiteUrl()}/blog/${slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.description,
     datePublished: post.date,
+    url: pageUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
     author: { "@type": "Person", name: post.author },
-    publisher: { "@type": "Organization", name: "ChipViagem" },
+    publisher: {
+      "@type": "Organization",
+      name: "ChipViagem",
+      url: getSiteUrl(),
+    },
   };
 
   return (

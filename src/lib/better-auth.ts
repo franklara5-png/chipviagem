@@ -15,6 +15,11 @@ export const auth = betterAuth({
   }),
   secret: process.env.BETTER_AUTH_SECRET!,
   baseURL: process.env.BETTER_AUTH_URL!,
+  // Aceita apex e www após apontamento do domínio customizado
+  trustedOrigins: [
+    "https://chipviagem.com.br",
+    "https://www.chipviagem.com.br",
+  ],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,

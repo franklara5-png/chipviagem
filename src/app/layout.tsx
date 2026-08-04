@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getSeoMetadata } from "@/lib/seo";
+import { getSeoMetadata, PRODUCTION_SITE_URL } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = getSeoMetadata();
+export const metadata: Metadata = {
+  ...getSeoMetadata(),
+  metadataBase: new URL(PRODUCTION_SITE_URL),
+};
 
 export default function RootLayout({
   children,
