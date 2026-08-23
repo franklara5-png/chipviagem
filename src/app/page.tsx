@@ -10,7 +10,9 @@ import { ReviewsCarousel } from "@/components/reviews-carousel";
 import { getApprovedReviews } from "@/lib/reviews";
 import { getSeoMetadata } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+// ISR: a pagina e pre-renderizada e revalidada de hora em hora.
+// force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
+export const revalidate = 3600;
 
 export const metadata = getSeoMetadata({
   title: "Chip de viagem (eSIM) com entrega imediata",

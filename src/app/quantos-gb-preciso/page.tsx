@@ -15,7 +15,7 @@ import { eq } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export const metadata = getSeoMetadata({
-  title: "Quantos GB eu preciso? Calculadora de dados para viagem",
+  title: "Quantos GB Preciso na Viagem? Calculadora",
   description:
     "Calcule quantos gigas de internet você precisa na viagem. Ferramenta gratuita com estimativa por hábito e recomendação de planos eSIM.",
   path: "/quantos-gb-preciso",

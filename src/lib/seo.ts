@@ -30,25 +30,30 @@ export interface SeoOptions {
   title?: string;
   description?: string;
   path?: string;
+  /**
+   * Só informe para sobrescrever a imagem padrão. Deixando vazio, o Next usa
+   * a convenção de arquivo `app/opengraph-image.tsx`, que gera a imagem e
+   * emite og:image/twitter:image automaticamente.
+   */
   ogImage?: string;
   noIndex?: boolean;
-  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 export function getSeoMetadata(options: SeoOptions = {}): Metadata {
-  const {
-    title,
-    description = DEFAULT_DESCRIPTION,
-    path = "",
-    ogImage = "/og-image.png",
-    noIndex = false,
-    jsonLd,
-  } = options;
+  const { title, description = DEFAULT_DESCRIPTION, path = "", ogImage, noIndex = false } = options;
 
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Conectado em qualquer lugar do mundo.`;
   const canonical = `${SITE_URL}${path}`;
-  // OG/Twitter images: caminho relativo resolvido via metadataBase → URL absoluta
-  const absoluteOgImage = ogImage.startsWith("http") ? ogImage : `${SITE_URL}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`;
+  const images = ogImage
+    ? [
+        {
+          url: ogImage.startsWith("http") ? ogImage : `${SITE_URL}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: SITE_NAME,
+        },
+      ]
+    : undefined;
 
   return {
     title: fullTitle,
@@ -62,18 +67,15 @@ export function getSeoMetadata(options: SeoOptions = {}): Metadata {
       siteName: SITE_NAME,
       locale: "pt_BR",
       type: "website",
-      images: [{ url: absoluteOgImage, width: 1200, height: 630, alt: SITE_NAME }],
+      ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [absoluteOgImage],
+      ...(images ? { images: images.map((i) => i.url) } : {}),
     },
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
-    other: jsonLd
-      ? { "script:ld+json": JSON.stringify(Array.isArray(jsonLd) ? jsonLd : [jsonLd]) }
-      : undefined,
   };
 }
 

@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { getSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Entrar",
-  robots: { index: false, follow: false },
-};
+export const metadata = getSeoMetadata({ title: "Entrar", path: "/login", noIndex: true });
 
 export default function LoginPage() {
   return (

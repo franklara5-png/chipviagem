@@ -13,7 +13,9 @@ import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { getSeoMetadata, getSiteUrl } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+// ISR: a pagina e pre-renderizada e revalidada de hora em hora.
+// force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
+export const revalidate = 3600;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

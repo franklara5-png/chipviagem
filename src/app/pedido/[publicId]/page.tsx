@@ -1,5 +1,9 @@
 import { PublicLayout } from "@/components/layout/public-layout";
 import { OrderStatus } from "./order-status";
+import { getSeoMetadata } from "@/lib/seo";
+
+// Pagina de pedido expoe dados do cliente e o QR code do eSIM. Nunca indexar.
+export const metadata = getSeoMetadata({ title: "Status do pedido", noIndex: true });
 
 interface PedidoPageProps {
   params: Promise<{ publicId: string }>;

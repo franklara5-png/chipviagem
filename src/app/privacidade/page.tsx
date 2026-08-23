@@ -4,7 +4,6 @@ import { getSeoMetadata } from "@/lib/seo";
 export const metadata = getSeoMetadata({
   title: "Política de privacidade",
   path: "/privacidade",
-  noIndex: true,
 });
 
 export default function PrivacidadePage() {

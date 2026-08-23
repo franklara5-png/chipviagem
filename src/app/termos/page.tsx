@@ -4,7 +4,6 @@ import { getSeoMetadata } from "@/lib/seo";
 export const metadata = getSeoMetadata({
   title: "Termos de uso",
   path: "/termos",
-  noIndex: true,
 });
 
 export default function TermosPage() {

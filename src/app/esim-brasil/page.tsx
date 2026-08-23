@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const metadata = getSeoMetadata({
-  title: "eSIM Brasil | Chip Virtual para Viajar ao Brasil",
+  title: "eSIM Brasil: Chip Virtual para Estrangeiros",
   description:
     "eSIM para o Brasil: internet rápida para turistas. Cobertura nacional, ativação em minutos e suporte multilíngue. Compre online e chegue conectado.",
   path: "/esim-brasil",

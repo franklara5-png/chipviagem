@@ -20,7 +20,8 @@ export async function generateMetadata({ params }: PageProps) {
   const post = getBlogPost(slug);
   if (!post) return getSeoMetadata({ noIndex: true });
   return getSeoMetadata({
-    title: post.title,
+    // seoTitle cai para title quando nao definido no frontmatter
+    title: post.seoTitle,
     description: post.description,
     path: `/blog/${slug}`,
   });

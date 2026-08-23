@@ -7,6 +7,12 @@ const BLOG_DIR = path.join(process.cwd(), "content/blog");
 export interface BlogPost {
   slug: string;
   title: string;
+  /**
+   * Titulo usado na tag <title>. O Google corta por volta de 60 caracteres e o
+   * helper de SEO ainda soma " | ChipViagem" (13). Preencha `seoTitle` no
+   * frontmatter quando o `title` (que vira o <h1>) for longo demais.
+   */
+  seoTitle: string;
   description: string;
   date: string;
   author: string;
@@ -31,6 +37,7 @@ export function getBlogPosts(): BlogPost[] {
       return {
         slug,
         title: data.title as string,
+        seoTitle: (data.seoTitle as string) ?? (data.title as string),
         description: data.description as string,
         date: data.date as string,
         author: (data.author as string) ?? "Equipe ChipViagem",

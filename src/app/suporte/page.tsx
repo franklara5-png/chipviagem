@@ -8,7 +8,9 @@ import {
   normalizeE164,
 } from "@/lib/whatsapp";
 
-export const dynamic = "force-dynamic";
+// ISR: a pagina e pre-renderizada e revalidada de hora em hora.
+// force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
+export const revalidate = 3600;
 
 export const metadata = getSeoMetadata({
   title: "Suporte",

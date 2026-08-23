@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const metadata = getSeoMetadata({
-  title: "Chip Internacional | eSIM para Qualquer País",
+  title: "Chip Internacional: eSIM para 100+ Países",
   description:
     "Chip internacional (eSIM) com cobertura em 100+ países. Internet rápida, entrega imediata e pagamento via Pix. Viaje conectado com a ChipViagem.",
   path: "/chip-internacional",

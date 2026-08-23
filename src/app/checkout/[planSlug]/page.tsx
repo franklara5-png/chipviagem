@@ -6,8 +6,12 @@ import { plans } from "@/db/schema";
 import { formatBrl, formatDataMb } from "@/lib/utils";
 import { getSession } from "@/lib/get-session";
 import { CheckoutForm } from "./checkout-form";
+import { getSeoMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+// Checkout nao deve ser indexado: conteudo fino e duplicado por plano.
+export const metadata = getSeoMetadata({ title: "Checkout", noIndex: true });
 
 interface CheckoutPageProps {
   params: Promise<{ planSlug: string }>;
