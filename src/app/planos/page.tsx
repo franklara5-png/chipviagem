@@ -6,6 +6,9 @@ import { plans } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { getSeoMetadata } from "@/lib/seo";
 import { PlanosFilter } from "./planos-filter";
+import { PlanGuide, PlanIncludes, PLANOS_FAQ } from "./plan-guide";
+import { FaqSection, faqJsonLd } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +45,7 @@ export default async function PlanosPage({
 
   return (
     <PublicLayout>
+      <JsonLd data={faqJsonLd(PLANOS_FAQ)} />
       <div className="mx-auto max-w-6xl px-4 py-12">
         <h1 className="text-3xl font-bold text-ink">Planos de chip de viagem</h1>
         <p className="mt-2 text-slate-600">
@@ -88,6 +92,10 @@ export default async function PlanosPage({
             </div>
           </div>
         )}
+
+        <PlanGuide />
+        <PlanIncludes />
+        <FaqSection items={PLANOS_FAQ} title="Dúvidas sobre os planos" />
       </div>
     </PublicLayout>
   );
