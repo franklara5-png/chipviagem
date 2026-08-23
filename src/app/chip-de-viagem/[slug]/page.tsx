@@ -11,7 +11,7 @@ import { destinations, plans } from "@/db/schema";
 import { getPlanFilterForDestination } from "@/lib/destinations/plan-filter";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { getSeoMetadata, getSiteUrl } from "@/lib/seo";
+import { getSeoMetadata, getSiteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 // ISR: a pagina e pre-renderizada e revalidada de hora em hora.
 // force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
@@ -107,6 +107,11 @@ export default async function DestinationPage({ params }: PageProps) {
     ...productJsonLdBase,
     ...(aggregateLd ? [aggregateLd] : []),
     ...(faqLd ? [faqLd] : []),
+    breadcrumbJsonLd([
+      { name: "Início", path: "/" },
+      { name: "Destinos", path: "/planos" },
+      { name: dest.name, path: `/chip-de-viagem/${slug}` },
+    ]),
   ];
 
   const introParagraphs = dest.intro?.split("\n\n").filter(Boolean) ?? [];

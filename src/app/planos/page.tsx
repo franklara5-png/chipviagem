@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { PlanCard } from "@/components/plan-card";
 import { db } from "@/db";
@@ -49,6 +50,10 @@ export default async function PlanosPage({
 
         <PlanosFilter regions={regions} currentRegion={params.regiao} currentSort={params.ordenar} />
 
+        <h2 className="mt-10 text-xl font-semibold text-ink">
+          {params.regiao ? `Planos de eSIM para ${params.regiao}` : "Planos de eSIM por destino"}
+        </h2>
+
         {filtered.length > 0 ? (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((plan) => (
@@ -56,9 +61,32 @@ export default async function PlanosPage({
             ))}
           </div>
         ) : (
-          <p className="mt-8 text-center text-slate-500">
-            Nenhum plano disponível. Execute <code className="rounded bg-slate-100 px-1">npm run db:seed</code> para popular o catálogo.
-          </p>
+          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-8 text-center">
+            <p className="text-slate-700">
+              {params.regiao
+                ? "Nenhum plano disponível para esse filtro no momento."
+                : "Estamos atualizando o catálogo de planos."}
+            </p>
+            <p className="mt-2 text-sm text-slate-500">
+              Fale com a gente pelo suporte que montamos a melhor opção para o seu destino.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              {params.regiao && (
+                <Link
+                  href="/planos"
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:text-primary"
+                >
+                  Ver todos os destinos
+                </Link>
+              )}
+              <Link
+                href="/suporte"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+              >
+                Falar com o suporte
+              </Link>
+            </div>
+          </div>
         )}
       </div>
     </PublicLayout>

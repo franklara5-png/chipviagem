@@ -8,7 +8,7 @@ import { plans, destinations } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { ReviewsCarousel } from "@/components/reviews-carousel";
 import { getApprovedReviews } from "@/lib/reviews";
-import { getSeoMetadata } from "@/lib/seo";
+import { getSeoMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 // ISR: a pagina e pre-renderizada e revalidada de hora em hora.
 // force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
@@ -80,7 +80,7 @@ export default async function HomePage() {
 
   return (
     <PublicLayout>
-      <JsonLd data={faqJsonLd(homeFaq)} />
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd(), faqJsonLd(homeFaq)]} />
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-16 text-white md:py-24">

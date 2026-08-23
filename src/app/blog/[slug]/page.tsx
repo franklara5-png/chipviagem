@@ -5,7 +5,7 @@ import { PublicLayout } from "@/components/layout/public-layout";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedDestinations } from "@/components/blog-related-destinations";
 import { getBlogPost, getBlogPosts } from "@/lib/mdx";
-import { getSeoMetadata, getSiteUrl } from "@/lib/seo";
+import { getSeoMetadata, getSiteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -65,7 +65,16 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <PublicLayout>
-      <JsonLd data={jsonLd} />
+      <JsonLd
+        data={[
+          jsonLd,
+          breadcrumbJsonLd([
+            { name: "Início", path: "/" },
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${slug}` },
+          ]),
+        ]}
+      />
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-8 lg:grid-cols-[1fr_250px]">
           <article className="min-w-0">

@@ -84,3 +84,49 @@ export function getSiteUrl(): string {
 }
 
 export { SITE_NAME, DEFAULT_DESCRIPTION };
+
+/**
+ * Identidade da marca para o Google. Vai só na home — repetir Organization em
+ * toda página não ajuda e polui. Dados conferem com o rodapé do site.
+ */
+export function organizationJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: SITE_NAME,
+    legalName: "Altivia",
+    taxID: "63.101.423/0001-18",
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon`,
+    image: `${SITE_URL}/opengraph-image`,
+    description: DEFAULT_DESCRIPTION,
+    areaServed: "BR",
+  };
+}
+
+export function websiteJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: "pt-BR",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+/** Trilha de navegação — o Google usa para mostrar o caminho no lugar da URL crua. */
+export function breadcrumbJsonLd(items: { name: string; path: string }[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
