@@ -79,12 +79,14 @@ function isAllowedOrigin(request: Request): boolean {
 }
 
 export async function POST(req: Request) {
-  if (!process.env.DEEPSEEK_API_KEY) {
-    return jsonError("Assistente indisponível. Configure DEEPSEEK_API_KEY.", 503);
-  }
-
+  // Origem antes de tudo: nao faz sentido revelar estado de configuracao
+  // para quem esta chamando de fora do site.
   if (!isAllowedOrigin(req)) {
     return jsonError("Origem não permitida", 403);
+  }
+
+  if (!process.env.DEEPSEEK_API_KEY) {
+    return jsonError("Assistente indisponível no momento.", 503);
   }
 
   const ip = getClientIp(req);
