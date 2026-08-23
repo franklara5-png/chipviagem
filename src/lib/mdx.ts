@@ -19,6 +19,8 @@ export interface BlogPost {
   content: string;
   readingTime: string;
   relatedDestinations: string[];
+  /** Slugs de outros posts, para linkagem interna no fim do artigo. */
+  relatedPosts: string[];
 }
 
 export function getBlogPosts(): BlogPost[] {
@@ -44,6 +46,7 @@ export function getBlogPosts(): BlogPost[] {
         content,
         readingTime: `${minutes} min de leitura`,
         relatedDestinations: (data.relatedDestinations as string[]) ?? [],
+        relatedPosts: (data.relatedPosts as string[]) ?? [],
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

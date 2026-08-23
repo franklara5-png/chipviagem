@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedDestinations } from "@/components/blog-related-destinations";
+import { RelatedPosts } from "@/components/blog-related-posts";
 import { getBlogPost, getBlogPosts } from "@/lib/mdx";
 import { getSeoMetadata, getSiteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -90,6 +91,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
 
             <RelatedDestinations slugs={post.relatedDestinations} />
+            <RelatedPosts slugs={post.relatedPosts} currentSlug={slug} />
           </article>
 
           {headings.length > 0 && (
