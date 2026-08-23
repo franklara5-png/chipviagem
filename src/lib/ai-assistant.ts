@@ -1,9 +1,10 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br";
+import { getSiteUrl } from "@/lib/seo";
 
 export function buildAssistantSystemPrompt(
   pagePath?: string,
   calculatorContext?: string
 ): string {
+  const SITE_URL = getSiteUrl();
   const pageHint = pagePath ? `\nO visitante está na página: ${pagePath}` : "";
   const calculatorHint = calculatorContext ?? "";
 
@@ -37,3 +38,13 @@ Responda SEMPRE em português do Brasil, de forma clara, amigável e objetiva.
 }
 
 export const CHAT_MAX_MESSAGES = 30;
+
+/** Teto de caracteres por mensagem individual. */
+export const CHAT_MAX_CHARS_PER_MESSAGE = 2_000;
+
+/** Teto de caracteres somando a conversa inteira. */
+export const CHAT_MAX_TOTAL_CHARS = 16_000;
+
+/** Requisições por IP na janela de CHAT_RATE_WINDOW_MS. */
+export const CHAT_RATE_LIMIT = 12;
+export const CHAT_RATE_WINDOW_MS = 60_000;

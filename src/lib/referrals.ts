@@ -6,6 +6,7 @@ import { sendReferralRewardEmail } from "@/lib/email";
 import { getWhatsAppEmailProps } from "@/lib/whatsapp";
 import { render } from "@react-email/render";
 import { ReferralRewardEmail } from "../../emails/referral-reward";
+import { getSiteUrl } from "@/lib/seo";
 
 const refCodeAlphabet = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 8);
 
@@ -17,7 +18,7 @@ export const REFERRAL_COOKIE_NAME = "cv_ref";
 export const REFERRAL_COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 
 export function getReferralLink(refCode: string): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br";
+  const siteUrl = getSiteUrl();
   return `${siteUrl}/?ref=${refCode}`;
 }
 
@@ -205,7 +206,7 @@ export async function processReferralConversion(friendOrderId: string) {
     })
     .where(eq(referrals.id, referral.id));
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br";
+  const siteUrl = getSiteUrl();
   const html = await render(
     ReferralRewardEmail({
       referrerName: referrerOrder.customerName,

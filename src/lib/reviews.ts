@@ -8,6 +8,7 @@ import ReviewRequestEmail from "../../emails/review-request";
 import { sendReviewRequestEmail } from "@/lib/email";
 import { getWhatsAppEmailProps } from "@/lib/whatsapp";
 import type { Plan } from "@/db/schema";
+import { getSiteUrl } from "@/lib/seo";
 
 const tokenAlphabet = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 32);
 
@@ -61,7 +62,7 @@ function isReviewDue(order: {
 
 export async function runReviewRequestCron() {
   const today = startOfDay(new Date());
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br";
+  const siteUrl = getSiteUrl();
 
   const eligibleOrders = await db
     .select({

@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { getSetting } from "@/lib/settings";
 import { emailSupportBlock, getWhatsAppMessage, normalizeE164 } from "@/lib/whatsapp";
+import { getSiteUrl } from "@/lib/seo";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -47,7 +48,7 @@ export async function sendEsimEmail(data: {
       <p><strong>Endereço SM-DP+:</strong> ${data.smdpAddress}</p>
       <p>Escaneie o QR code abaixo ou acesse seu pedido:</p>
       <img src="${data.qrCodeUrl}" alt="QR Code eSIM" width="250" />
-      <p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br"}/pedido/${data.orderPublicId}">Ver pedido online</a></p>
+      <p><a href="${getSiteUrl()}/pedido/${data.orderPublicId}">Ver pedido online</a></p>
       ${referralSection}
       ${supportSection}
       <hr/>
@@ -107,7 +108,7 @@ export async function sendMarginAlertEmail(data: {
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      <p><a href="${process.env.NEXT_PUBLIC_SITE_URL ?? "https://chipviagem.com.br"}/admin/planos?risco=1">Ver planos em risco no admin</a></p>
+      <p><a href="${getSiteUrl()}/admin/planos?risco=1">Ver planos em risco no admin</a></p>
       <hr/>
       <p style="color:#666;font-size:12px">ChipViagem — Altivia CNPJ 63.101.423/0001-18</p>
     </div>
