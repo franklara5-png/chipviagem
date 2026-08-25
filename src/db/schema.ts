@@ -7,6 +7,8 @@ import {
   jsonb,
   numeric,
   pgEnum,
+  uuid,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -137,6 +139,28 @@ export const analyticsEvents = pgTable("analytics_events", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Hermes stats (dashboard-frank): uma linha por visita, sem upsert. A
+// agregação "1 IP = 1 linha com views e último acesso" acontece só na
+// leitura, em /api/hermes/stats (GROUP BY ip).
+export const siteVisits = pgTable(
+  "site_visits",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    ip: text("ip"),
+    path: text("path"),
+    referrer: text("referrer"),
+    userAgent: text("user_agent"),
+    country: text("country"),
+    region: text("region"),
+    city: text("city"),
+    visitedAt: timestamp("visited_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("idx_site_visits_visited_at").on(table.visitedAt.desc()),
+    index("idx_site_visits_ip").on(table.ip),
+  ]
+);
+
 export const exchangeRates = pgTable("exchange_rates", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   rate: numeric("rate", { precision: 10, scale: 4 }).notNull(),
@@ -249,6 +273,7 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
 export type WebhookEvent = typeof webhookEvents.$inferSelect;
 export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
+export type SiteVisit = typeof siteVisits.$inferSelect;
 export type ExchangeRate = typeof exchangeRates.$inferSelect;
 export type PriceChange = typeof priceChanges.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
