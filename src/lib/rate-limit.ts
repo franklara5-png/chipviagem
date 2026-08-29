@@ -8,8 +8,7 @@
  * distribuído.
  *
  * Para proteção durável, o caminho é rate limiting na borda (Vercel WAF)
- * ou um contador compartilhado (Redis/Postgres). Ver comentário em
- * /api/chat/route.ts.
+ * ou um contador compartilhado (Redis/Postgres).
  */
 
 interface Bucket {
