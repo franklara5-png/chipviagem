@@ -24,7 +24,7 @@ export function PlanosFilter({ regions, currentRegion, currentSort }: PlanosFilt
       <select
         value={currentRegion ?? ""}
         onChange={(e) => update("regiao", e.target.value)}
-        className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm"
+        className="rounded-lg border border-ink/8 bg-surface-raised px-4 py-2 text-sm"
       >
         <option value="">Todas as regiões</option>
         {regions.map((r) => (
@@ -34,7 +34,7 @@ export function PlanosFilter({ regions, currentRegion, currentSort }: PlanosFilt
       <select
         value={currentSort ?? "preco-asc"}
         onChange={(e) => update("ordenar", e.target.value)}
-        className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm"
+        className="rounded-lg border border-ink/8 bg-surface-raised px-4 py-2 text-sm"
       >
         <option value="preco-asc">Menor preço</option>
         <option value="preco-desc">Maior preço</option>

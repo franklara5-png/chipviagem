@@ -23,7 +23,7 @@ export function GoogleLoginButton({ label = "Entrar com Google", className = "" 
 
   return (
     <button type="button" onClick={handleClick} disabled={loading}
-      className={`w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg font-medium text-sm bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${className}`}>
+      className={`w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg font-medium text-sm bg-surface-raised text-ink-soft border border-slate-300 hover:bg-surface shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${className}`}>
       {GOOGLE_LOGO}
       {loading ? "Redirecionando..." : label}
     </button>

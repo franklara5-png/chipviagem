@@ -9,6 +9,7 @@ import { eq, and, desc } from "drizzle-orm";
 import { ReviewsCarousel } from "@/components/reviews-carousel";
 import { getApprovedReviews } from "@/lib/reviews";
 import { getSeoMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { Hero3DCard } from "@/components/hero-3d";
 
 // ISR: a pagina e pre-renderizada e revalidada de hora em hora.
 // force-dynamic desligava todo o cache e ainda anulava o generateStaticParams.
@@ -83,41 +84,83 @@ export default async function HomePage() {
       <JsonLd data={[organizationJsonLd(), websiteJsonLd(), faqJsonLd(homeFaq)]} />
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-16 text-white md:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-bold md:text-5xl">
-            Chip de viagem com entrega imediata
-          </h1>
-          <p className="mt-4 text-lg text-sky-100 md:text-xl">
-            Conectado em qualquer lugar do mundo. Pague no Pix e receba seu eSIM em minutos.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Entrega imediata</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Pagamento via Pix</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Suporte em português</span>
+      <section className="relative overflow-hidden bg-deep px-4 pb-20 pt-16 text-white md:pb-28 md:pt-20">
+        {/* Chão em fuga — horizonte, não textura. */}
+        <div className="grid-floor pointer-events-none absolute inset-x-0 bottom-0 h-72 opacity-70" />
+        {/* Massas de cor à deriva atrás de tudo. */}
+        <div className="animate-drift pointer-events-none absolute -left-24 top-0 h-80 w-80 rounded-full bg-accent opacity-25 blur-[110px]" />
+        <div
+          className="animate-drift pointer-events-none absolute -right-16 bottom-0 h-96 w-96 rounded-full bg-primary opacity-30 blur-[120px]"
+          style={{ animationDelay: "-8s" }}
+        />
+
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+          <div className="animate-rise text-center md:text-left">
+            <span className="glass backdrop-blur-xl backdrop-saturate-150 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-white/85">
+              eSIM · entrega em minutos
+            </span>
+
+            <h1 className="font-display mt-5 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-6xl">
+              Desembarque
+              <br />
+              <span className="text-gradient">já conectado.</span>
+            </h1>
+
+            <p className="mt-5 max-w-md text-lg text-white/65 md:text-xl">
+              Chip de viagem digital para mais de 200 destinos. Pague no Pix, escaneie o QR
+              code e chegue com internet funcionando.
+            </p>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
+              <Link
+                href="/planos"
+                className="rounded-xl bg-[image:var(--brand-gradient)] px-7 py-4 text-base font-bold text-white shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
+              >
+                Ver todos os planos
+              </Link>
+              <Link
+                href="/quantos-gb-preciso"
+                className="glass backdrop-blur-xl backdrop-saturate-150 rounded-xl px-7 py-4 text-base font-bold text-white transition-transform hover:-translate-y-0.5"
+              >
+                Quantos GB eu preciso?
+              </Link>
+            </div>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/55 md:justify-start">
+              {["Entrega imediata", "Pagamento via Pix", "Suporte em português"].map((item) => (
+                <span key={item} className="flex items-center gap-1.5">
+                  <svg viewBox="0 0 20 20" className="h-4 w-4 text-accent" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.8 3.8 6.8-6.8a1 1 0 0 1 1.4 0Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver todos os planos
-          </Link>
+
+          <Hero3DCard />
         </div>
       </section>
 
       {/* Destinos populares */}
       {activeDestinations.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-12">
-          <h2 className="mb-6 text-2xl font-bold text-ink">Destinos populares</h2>
+        <section className="mx-auto max-w-6xl px-4 py-16">
+          <h2 className="font-display mb-7 text-3xl font-extrabold text-ink">
+            Destinos populares
+          </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {activeDestinations.map((dest) => (
               <Link
                 key={dest.slug}
                 href={`/chip-de-viagem/${dest.slug}`}
-                className="flex flex-col items-center rounded-xl border border-slate-200 bg-white p-4 text-center transition hover:border-primary hover:shadow-md"
+                className="tilt-3d flex flex-col items-center rounded-2xl border border-ink/6 bg-surface-raised p-5 text-center shadow-[var(--shadow-lift)]"
               >
                 <span className="text-3xl">{dest.flagEmoji}</span>
-                <span className="mt-2 text-sm font-medium text-ink">{dest.name}</span>
+                <span className="mt-2 text-sm font-semibold text-ink">{dest.name}</span>
               </Link>
             ))}
           </div>
@@ -125,18 +168,24 @@ export default async function HomePage() {
       )}
 
       {/* Calculadora GB */}
-      <section className="mx-auto max-w-6xl px-4 py-12">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 md:flex md:items-center md:justify-between md:gap-8">
-          <div className="md:max-w-lg">
-            <h2 className="text-2xl font-bold text-ink">Não sabe quantos GB contratar?</h2>
-            <p className="mt-2 text-slate-600">
-              Use nossa calculadora gratuita: informe os dias de viagem e seus hábitos de uso.
-              Receba uma estimativa com margem de segurança e planos recomendados.
+      <section className="mx-auto max-w-6xl px-4 py-8">
+        <div className="relative overflow-hidden rounded-3xl border border-ink/6 bg-surface-raised p-9 shadow-[var(--shadow-lift)] md:flex md:items-center md:justify-between md:gap-8">
+          <div
+            className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full opacity-15 blur-[70px]"
+            style={{ background: "var(--brand-gradient)" }}
+          />
+          <div className="relative md:max-w-lg">
+            <h2 className="font-display text-3xl font-extrabold text-ink">
+              Não sabe quantos GB contratar?
+            </h2>
+            <p className="mt-3 text-ink-soft">
+              Informe os dias de viagem e seus hábitos de uso. A calculadora devolve uma
+              estimativa com margem de segurança e já sugere os planos que servem.
             </p>
           </div>
           <Link
             href="/quantos-gb-preciso"
-            className="mt-6 inline-block rounded-xl bg-primary px-8 py-4 font-semibold text-white transition hover:bg-primary-dark md:mt-0 md:shrink-0"
+            className="relative mt-7 inline-block rounded-xl bg-[image:var(--brand-gradient)] px-8 py-4 font-bold text-white shadow-[0_8px_24px_rgba(199,75,158,0.26)] transition-transform hover:-translate-y-0.5 md:mt-0 md:shrink-0"
           >
             Calcular meus GB
           </Link>
@@ -145,10 +194,12 @@ export default async function HomePage() {
 
       {/* Planos em destaque */}
       {featuredPlans.length > 0 && (
-        <section className="bg-white px-4 py-12">
+        <section className="px-4 py-16">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-6 text-2xl font-bold text-ink">Planos em destaque</h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <h2 className="font-display mb-7 text-3xl font-extrabold text-ink">
+              Planos em destaque
+            </h2>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {featuredPlans.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
@@ -158,26 +209,39 @@ export default async function HomePage() {
       )}
 
       {/* Como funciona */}
-      <section className="mx-auto max-w-6xl px-4 py-12">
-        <h2 className="mb-8 text-center text-2xl font-bold text-ink">Como funciona</h2>
-        <div className="grid gap-8 md:grid-cols-3">
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="font-display mb-12 text-center text-3xl font-extrabold text-ink">
+          Três passos e você está online
+        </h2>
+        <div className="relative grid gap-8 md:grid-cols-3">
+          {/* Linha que costura os três passos, só no desktop. */}
+          <div
+            className="pointer-events-none absolute left-[16%] right-[16%] top-8 hidden h-0.5 opacity-25 md:block"
+            style={{ background: "var(--brand-gradient)" }}
+          />
           {[
             { step: "1", title: "Escolha seu plano", desc: "Selecione o destino e a quantidade de dados ideal para sua viagem." },
             { step: "2", title: "Pague no Pix", desc: "Checkout rápido e seguro. Confirmação em segundos." },
             { step: "3", title: "Escaneie o QR", desc: "Receba o eSIM por e-mail e instale no celular antes de embarcar." },
           ].map((item) => (
-            <div key={item.step} className="text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
+            <div key={item.step} className="relative text-center">
+              <div
+                className="font-display mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-extrabold text-white shadow-[0_10px_28px_rgba(199,75,158,0.28)]"
+                style={{ background: "var(--brand-gradient)" }}
+              >
                 {item.step}
               </div>
-              <h3 className="mt-4 font-semibold text-ink">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+              <h3 className="font-display mt-5 text-xl font-bold text-ink">{item.title}</h3>
+              <p className="mt-2 text-sm text-ink-soft">{item.desc}</p>
             </div>
           ))}
         </div>
-        <div className="mt-8 text-center">
-          <Link href="/como-funciona" className="text-primary font-medium hover:underline">
-            Saiba mais →
+        <div className="mt-10 text-center">
+          <Link
+            href="/como-funciona"
+            className="font-semibold text-primary transition-colors hover:text-primary-dark"
+          >
+            Ver o passo a passo completo →
           </Link>
         </div>
       </section>
@@ -185,18 +249,30 @@ export default async function HomePage() {
       {/* Prova social */}
       <ReviewsCarousel reviews={approvedReviews} />
 
-      <section className="bg-primary/5 px-4 py-12">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-2xl font-bold text-ink">Milhares de brasileiros já viajaram conectados</h2>
-          <p className="mt-4 text-slate-600">
-            Economize até 90% comparado ao roaming internacional da sua operadora.
-            Instale antes de embarcar e chegue no destino com internet funcionando.
+      <section className="relative overflow-hidden bg-deep px-4 py-20 text-white">
+        <div
+          className="animate-drift pointer-events-none absolute left-1/2 top-1/2 h-72 w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-[110px]"
+          style={{ background: "var(--brand-gradient)" }}
+        />
+        <div className="relative mx-auto max-w-4xl text-center">
+          <h2 className="font-display text-3xl font-extrabold md:text-4xl">
+            Economize até <span className="text-gradient">90%</span> contra o roaming
+          </h2>
+          <p className="mt-5 text-lg text-white/60">
+            Instale antes de embarcar e chegue no destino com internet funcionando — sem
+            fila de loja, sem trocar o chip físico, sem susto na fatura.
           </p>
+          <Link
+            href="/planos"
+            className="mt-8 inline-block rounded-xl bg-[image:var(--brand-gradient)] px-8 py-4 font-bold text-white shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
+          >
+            Escolher meu plano
+          </Link>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-4 pb-16">
+      <section className="mx-auto max-w-3xl px-4 py-16">
         <FaqSection items={homeFaq} />
       </section>
     </PublicLayout>

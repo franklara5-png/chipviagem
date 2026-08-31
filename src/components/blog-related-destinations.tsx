@@ -19,14 +19,14 @@ export async function RelatedDestinations({ slugs }: RelatedDestinationsProps) {
   if (!dests.length) return null;
 
   return (
-    <section className="mt-12 rounded-xl border border-slate-200 bg-slate-50 p-6">
+    <section className="mt-12 rounded-xl border border-ink/8 bg-surface p-6">
       <h2 className="mb-4 text-xl font-bold text-ink">Destinos relacionados</h2>
       <div className="flex flex-wrap gap-3">
         {dests.map((d) => (
           <Link
             key={d.slug}
             href={`/chip-de-viagem/${d.slug}`}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-ink transition hover:border-primary hover:text-primary"
+            className="inline-flex items-center gap-2 rounded-lg border border-ink/8 bg-surface-raised px-4 py-2 text-sm font-medium text-ink transition hover:border-primary hover:text-primary"
           >
             <span>{d.flagEmoji}</span>
             {d.name}

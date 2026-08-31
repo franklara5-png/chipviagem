@@ -18,8 +18,8 @@ export default function NotFound() {
     <PublicLayout>
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
         <p className="text-sm font-semibold text-primary">Erro 404</p>
-        <h1 className="mt-2 text-3xl font-bold text-ink md:text-4xl">Não encontramos essa página</h1>
-        <p className="mx-auto mt-3 max-w-lg text-slate-600">
+        <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">Não encontramos essa página</h1>
+        <p className="mx-auto mt-3 max-w-lg text-ink-soft">
           O link pode estar quebrado ou a página pode ter mudado de endereço. Veja por onde seguir:
         </p>
 
@@ -28,10 +28,10 @@ export default function NotFound() {
             <Link
               key={a.href}
               href={a.href}
-              className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-primary hover:shadow-sm"
+              className="rounded-xl border border-ink/8 bg-surface-raised p-4 transition hover:border-primary hover:shadow-sm"
             >
               <span className="block font-semibold text-ink">{a.label}</span>
-              <span className="mt-1 block text-sm text-slate-500">{a.desc}</span>
+              <span className="mt-1 block text-sm text-ink-soft">{a.desc}</span>
             </Link>
           ))}
         </div>

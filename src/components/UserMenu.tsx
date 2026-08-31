@@ -22,7 +22,7 @@ export function UserMenu() {
 
   if (!session?.user) {
     return (
-      <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-primary transition">
+      <Link href="/login" className="text-sm font-medium text-ink-soft hover:text-primary transition">
         Entrar
       </Link>
     );
@@ -38,12 +38,12 @@ export function UserMenu() {
         <div className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">{initial}</div>}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
-          <div className="px-4 py-2 border-b border-slate-100">
+        <div className="absolute right-0 mt-2 w-56 bg-surface-raised rounded-lg shadow-lg border border-ink/8 py-1 z-50">
+          <div className="px-4 py-2 border-b border-ink/6">
             <p className="text-sm font-medium truncate text-slate-900">{user.name}</p>
-            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+            <p className="text-xs text-ink-soft truncate">{user.email}</p>
           </div>
-          <Link href="/painel" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" onClick={() => setOpen(false)}>
+          <Link href="/painel" className="flex items-center gap-2 px-4 py-2 text-sm text-ink-soft hover:bg-surface" onClick={() => setOpen(false)}>
             <User className="w-4 h-4" /> Minha conta
           </Link>
           <button onClick={() => signOut()} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">

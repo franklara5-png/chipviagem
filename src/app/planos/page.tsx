@@ -47,8 +47,10 @@ export default async function PlanosPage({
     <PublicLayout>
       <JsonLd data={faqJsonLd(PLANOS_FAQ)} />
       <div className="mx-auto max-w-6xl px-4 py-12">
-        <h1 className="text-3xl font-bold text-ink">Planos de chip de viagem</h1>
-        <p className="mt-2 text-slate-600">
+        <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">
+          Planos de <span className="text-gradient">chip de viagem</span>
+        </h1>
+        <p className="mt-3 text-lg text-ink-soft">
           Escolha o plano ideal para seu destino. Entrega imediata após pagamento.
         </p>
 
@@ -65,27 +67,27 @@ export default async function PlanosPage({
             ))}
           </div>
         ) : (
-          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-8 text-center">
-            <p className="text-slate-700">
+          <div className="mt-8 rounded-xl border border-ink/8 bg-surface-raised p-8 text-center">
+            <p className="text-ink-soft">
               {params.regiao
                 ? "Nenhum plano disponível para esse filtro no momento."
                 : "Estamos atualizando o catálogo de planos."}
             </p>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-soft">
               Fale com a gente pelo suporte que montamos a melhor opção para o seu destino.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               {params.regiao && (
                 <Link
                   href="/planos"
-                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:text-primary"
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-ink-soft transition hover:border-primary hover:text-primary"
                 >
                   Ver todos os destinos
                 </Link>
               )}
               <Link
                 href="/suporte"
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-dark"
               >
                 Falar com o suporte
               </Link>

@@ -39,9 +39,9 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     <PublicLayout>
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-ink">Finalizar compra</h1>
-          <p className="mt-2 text-slate-600">{plan.name}</p>
-          <div className="mt-3 flex justify-center gap-4 text-sm text-slate-500">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink">Finalizar compra</h1>
+          <p className="mt-2 text-ink-soft">{plan.name}</p>
+          <div className="mt-3 flex justify-center gap-4 text-sm text-ink-soft">
             <span>{plan.region}</span>
             <span>{formatDataMb(plan.dataAmountMb)}</span>
             <span>{plan.validityDays} dias</span>

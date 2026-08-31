@@ -32,7 +32,7 @@ export function ReviewForm({
       <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
         <p className="text-2xl">⭐</p>
         <h2 className="mt-2 text-xl font-bold text-ink">Obrigado pela avaliação!</h2>
-        <p className="mt-2 text-slate-600">
+        <p className="mt-2 text-ink-soft">
           Sua opinião foi recebida e será publicada após moderação.
         </p>
       </div>
@@ -54,8 +54,8 @@ export function ReviewForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <p className="text-slate-600">
+    <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
+      <p className="text-ink-soft">
         Como foi a internet na sua viagem para <strong>{destinationName}</strong>?
       </p>
 
@@ -110,7 +110,7 @@ export function ReviewForm({
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-accent py-3 font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
+        className="w-full rounded-lg bg-accent py-3 font-semibold text-white hover:bg-accent-dark disabled:opacity-50"
       >
         {pending ? "Enviando…" : "Enviar avaliação"}
       </button>

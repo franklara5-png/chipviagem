@@ -26,18 +26,18 @@ export function ReferralSection({ refCode, referralLink }: ReferralSectionProps)
         </div>
         <div className="flex-1">
           <h2 className="text-lg font-semibold text-ink">Indique e ganhe R$ 10</h2>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="mt-1 text-sm text-ink-soft">
             Compartilhe seu link. Seu amigo ganha R$ {REFERRAL_FRIEND_DISCOUNT_BRL} na primeira compra e
             você também ganha R$ 10 quando ele pagar.
           </p>
 
           <div className="mt-4">
-            <label className="text-xs font-medium text-slate-500">Seu link de indicação</label>
+            <label className="text-xs font-medium text-ink-soft">Seu link de indicação</label>
             <div className="mt-1 flex gap-2">
               <input
                 readOnly
                 value={referralLink}
-                className="flex-1 truncate rounded-lg border border-sky-200 bg-white px-3 py-2 text-xs text-slate-700"
+                className="flex-1 truncate rounded-lg border border-sky-200 bg-surface-raised px-3 py-2 text-xs text-ink-soft"
               />
               <button
                 type="button"
@@ -48,7 +48,7 @@ export function ReferralSection({ refCode, referralLink }: ReferralSectionProps)
                 {copied ? "Copiado" : "Copiar"}
               </button>
             </div>
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-ink-soft">
               Código: <span className="font-mono font-semibold text-ink">{refCode}</span>
             </p>
           </div>

@@ -29,7 +29,7 @@ export default async function AvaliarPage({ params, searchParams }: PageProps) {
   return (
     <PublicLayout>
       <div className="mx-auto max-w-lg px-4 py-12">
-        <h1 className="mb-6 text-center text-2xl font-bold text-ink">
+        <h1 className="font-display mb-6 text-center text-3xl font-extrabold tracking-tight text-ink">
           Avalie sua experiência
         </h1>
         <ReviewForm

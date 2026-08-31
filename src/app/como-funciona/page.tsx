@@ -11,8 +11,8 @@ export default function ComoFuncionaPage() {
   return (
     <PublicLayout>
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="text-3xl font-bold text-ink">Como funciona</h1>
-        <p className="mt-4 text-lg text-slate-600">
+        <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">Como funciona</h1>
+        <p className="mt-4 text-lg text-ink-soft">
           Comprar e usar um eSIM na ChipViagem é simples. Veja o passo a passo:
         </p>
 
@@ -31,16 +31,16 @@ export default function ComoFuncionaPage() {
               body: "Após a confirmação do pagamento, você recebe o QR code por e-mail e na página do pedido. Escaneie com seu celular e ative o plano ao chegar no destino (ou antes de embarcar).",
             },
           ].map((step) => (
-            <div key={step.title} className="rounded-xl border border-slate-200 bg-white p-6">
+            <div key={step.title} className="rounded-xl border border-ink/8 bg-surface-raised p-6">
               <h2 className="text-xl font-semibold text-ink">{step.title}</h2>
-              <p className="mt-2 text-slate-600">{step.body}</p>
+              <p className="mt-2 text-ink-soft">{step.body}</p>
             </div>
           ))}
         </div>
 
         <section className="mt-12">
           <h2 className="text-xl font-semibold text-ink">Compatibilidade</h2>
-          <p className="mt-2 text-slate-600">
+          <p className="mt-2 text-ink-soft">
             eSIMs funcionam em iPhones a partir do XS, Samsung Galaxy S20+, Google Pixel 3+ e diversos modelos recentes.
             Verifique em Ajustes/Configurações se seu aparelho permite adicionar plano celular via QR code.
           </p>

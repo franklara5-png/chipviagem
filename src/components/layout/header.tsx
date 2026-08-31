@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { UserMenu } from "@/components/UserMenu";
+import { MobileNav } from "./mobile-nav";
 
 const navLinks = [
   { href: "/planos", label: "Planos" },
@@ -12,29 +13,34 @@ const navLinks = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" aria-label="ChipViagem — Página inicial">
+    <header className="glass-light sticky top-0 z-50 border-b border-ink/5 backdrop-blur-xl backdrop-saturate-150">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <Link href="/" aria-label="ChipViagem — Página inicial" className="shrink-0">
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-6 md:flex">
+
+        <nav className="hidden items-center gap-7 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-slate-600 transition hover:text-primary"
+              className="relative text-sm font-semibold text-ink-soft transition-colors hover:text-primary after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-[image:var(--brand-gradient)] after:transition-all hover:after:w-full"
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <Link
-          href="/planos"
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-        >
-          Ver planos
-        </Link>
-        <UserMenu />
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/planos"
+            className="rounded-xl bg-[image:var(--brand-gradient)] px-4 py-2.5 text-sm font-bold text-white shadow-[0_6px_20px_rgba(199,75,158,0.30)] transition-transform hover:-translate-y-0.5 sm:px-5"
+          >
+            Ver planos
+          </Link>
+          <UserMenu />
+          <MobileNav links={navLinks} />
+        </div>
       </div>
     </header>
   );

@@ -27,8 +27,8 @@ export function ReviewsCarousel({ reviews }: { reviews: ReviewItem[] }) {
   return (
     <section className="bg-primary/5 px-4 py-12">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-2xl font-bold text-ink">Avaliações de clientes</h2>
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm transition-opacity">
+        <h2 className="font-display text-2xl font-extrabold text-ink">Avaliações de clientes</h2>
+        <div className="mt-6 rounded-xl border border-ink/8 bg-surface-raised p-8 shadow-sm transition-opacity">
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <Star
@@ -40,7 +40,7 @@ export function ReviewsCarousel({ reviews }: { reviews: ReviewItem[] }) {
             ))}
           </div>
           {current.comment && (
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+            <p className="mt-4 text-lg leading-relaxed text-ink-soft">
               &ldquo;{current.comment}&rdquo;
             </p>
           )}

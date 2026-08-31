@@ -25,16 +25,16 @@ export function ReviewsList({ reviews, title = "O que nossos clientes dizem" }: 
 
   return (
     <section className="py-10">
-      <h2 className="mb-6 text-2xl font-bold text-ink">{title}</h2>
+      <h2 className="font-display mb-6 text-2xl font-extrabold text-ink">{title}</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         {rated.map((review) => (
           <blockquote
             key={review.id}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="rounded-xl border border-ink/8 bg-surface-raised p-5 shadow-sm"
           >
             <Stars rating={review.rating!} />
             {review.comment && (
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">&ldquo;{review.comment}&rdquo;</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">&ldquo;{review.comment}&rdquo;</p>
             )}
             <footer className="mt-3 text-sm font-medium text-ink">— {review.customerFirstName}</footer>
           </blockquote>

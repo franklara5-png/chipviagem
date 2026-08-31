@@ -71,7 +71,7 @@ const STATUS_LABELS: Record<string, { label: string; description: string; color:
   refunded: {
     label: "Reembolsado",
     description: "Este pedido foi reembolsado.",
-    color: "text-slate-600 bg-slate-50 border-slate-200",
+    color: "text-ink-soft bg-surface border-ink/8",
   },
 };
 
@@ -135,7 +135,7 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
     return (
       <div className="flex flex-col items-center py-16">
         <span className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        <p className="mt-4 text-sm text-slate-500">Carregando pedido…</p>
+        <p className="mt-4 text-sm text-ink-soft">Carregando pedido…</p>
       </div>
     );
   }
@@ -164,25 +164,25 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-ink">Detalhes do pedido</h2>
         <dl className="mt-4 space-y-3 text-sm">
           <div className="flex justify-between">
-            <dt className="text-slate-500">Pedido</dt>
+            <dt className="text-ink-soft">Pedido</dt>
             <dd className="font-mono font-medium text-ink">{order.publicId}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-slate-500">Plano</dt>
+            <dt className="text-ink-soft">Plano</dt>
             <dd className="font-medium text-ink">{order.plan.name}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-slate-500">Dados</dt>
+            <dt className="text-ink-soft">Dados</dt>
             <dd className="text-ink">
               {formatDataMb(order.plan.dataAmountMb)} · {order.plan.validityDays} dias
             </dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-slate-500">Valor</dt>
+            <dt className="text-ink-soft">Valor</dt>
             <dd className="font-semibold text-primary">
               {parseFloat(order.discountBrl ?? "0") > 0 ? (
                 <>
@@ -197,20 +197,20 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
             </dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-slate-500">Pagamento</dt>
+            <dt className="text-ink-soft">Pagamento</dt>
             <dd className="text-ink">{order.paymentMethod === "pix" ? "PIX" : "Cartão"}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-slate-500">E-mail</dt>
+            <dt className="text-ink-soft">E-mail</dt>
             <dd className="text-ink">{order.customerEmail}</dd>
           </div>
         </dl>
       </div>
 
       {order.status === "delivered" && order.esim && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">Seu eSIM</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-ink-soft">
             Escaneie o QR code no seu celular para instalar o eSIM.
           </p>
 
@@ -218,22 +218,22 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
             <img
               src={order.esim.qrCodeUrl}
               alt="QR Code eSIM"
-              className="h-56 w-56 rounded-lg border border-slate-200"
+              className="h-56 w-56 rounded-lg border border-ink/8"
             />
 
             <dl className="w-full space-y-2 text-sm">
               <div>
-                <dt className="text-slate-500">Código de ativação</dt>
-                <dd className="mt-0.5 break-all rounded bg-slate-50 px-3 py-2 font-mono text-xs text-ink">
+                <dt className="text-ink-soft">Código de ativação</dt>
+                <dd className="mt-0.5 break-all rounded bg-surface px-3 py-2 font-mono text-xs text-ink">
                   {order.esim.activationCode}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Endereço SM-DP+</dt>
+                <dt className="text-ink-soft">Endereço SM-DP+</dt>
                 <dd className="mt-0.5 break-all font-mono text-xs text-ink">{order.esim.smdpAddress}</dd>
               </div>
               <div>
-                <dt className="text-slate-500">ICCID</dt>
+                <dt className="text-ink-soft">ICCID</dt>
                 <dd className="mt-0.5 font-mono text-xs text-ink">{order.esim.iccid}</dd>
               </div>
             </dl>
@@ -242,13 +242,13 @@ export function OrderStatus({ publicId }: OrderStatusProps) {
               type="button"
               onClick={handleResend}
               disabled={resending}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+              className="rounded-lg border border-ink/8 px-4 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface disabled:opacity-50"
             >
               {resending ? "Reenviando…" : "Reenviar e-mail com eSIM"}
             </button>
 
             {resendMessage && (
-              <p className="text-sm text-slate-600">{resendMessage}</p>
+              <p className="text-sm text-ink-soft">{resendMessage}</p>
             )}
           </div>
         </div>

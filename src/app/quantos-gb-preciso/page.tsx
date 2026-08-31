@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { FaqSection, faqJsonLd } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { PageHero } from "@/components/page-hero";
 import { GbCalculator } from "./calculator";
 import { db } from "@/db";
 import { destinations, plans } from "@/db/schema";
@@ -87,19 +88,14 @@ export default async function QuantosGbPage({ searchParams }: PageProps) {
     <PublicLayout>
       <JsonLd data={faqJsonLd(calculatorFaq)} />
 
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-12 text-white">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-3xl font-bold md:text-4xl">
-            Quantos GB eu preciso na viagem?
-          </h1>
-          <p className="mt-4 text-lg text-sky-100">
-            Calcule em segundos e receba recomendações de planos reais do nosso catálogo.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        size="compact"
+        title="Quantos GB eu preciso na viagem?"
+        subtitle="Calcule em segundos e receba recomendações de planos reais do nosso catálogo."
+      />
 
       <section className="mx-auto max-w-3xl px-4 py-10">
-        <Suspense fallback={<p className="text-center text-slate-500">Carregando calculadora…</p>}>
+        <Suspense fallback={<p className="text-center text-ink-soft">Carregando calculadora…</p>}>
           <GbCalculator
             plans={planSummaries}
             destinoSlug={destinoSlug}
@@ -133,8 +129,8 @@ export default async function QuantosGbPage({ searchParams }: PageProps) {
           de uso por dia.
         </p>
         <div className="not-prose overflow-x-auto">
-          <table className="w-full text-sm border border-slate-200">
-            <thead className="bg-slate-50">
+          <table className="w-full text-sm border border-ink/8">
+            <thead className="bg-surface">
               <tr>
                 <th className="px-4 py-2 text-left">Aplicativo / uso</th>
                 <th className="px-4 py-2 text-left">Consumo aproximado</th>
@@ -144,7 +140,7 @@ export default async function QuantosGbPage({ searchParams }: PageProps) {
               {HABITS.map((h) => (
                 <tr key={h.key}>
                   <td className="px-4 py-2 font-medium">{h.label}</td>
-                  <td className="px-4 py-2 text-slate-600">
+                  <td className="px-4 py-2 text-ink-soft">
                     {h.key === "streaming"
                       ? "~1.000 MB/h (HD)"
                       : h.key === "video"

@@ -120,22 +120,29 @@ export default async function DestinationPage({ params }: PageProps) {
     <PublicLayout>
       <JsonLd data={jsonLd} />
 
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-12 text-white">
-        <div className="mx-auto max-w-4xl">
-          <span className="text-4xl">{dest.flagEmoji}</span>
-          <h1 className="mt-4 text-3xl font-bold md:text-4xl">
-            Chip de viagem para {dest.name} (eSIM)
+      <section className="relative overflow-hidden bg-deep px-4 py-14 text-white">
+        <div className="grid-floor pointer-events-none absolute inset-x-0 bottom-0 h-48 opacity-60" />
+        <div
+          className="animate-drift pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full opacity-25 blur-[110px]"
+          style={{ background: "var(--brand-gradient)" }}
+        />
+        <div className="animate-rise relative mx-auto max-w-4xl">
+          <span className="glass backdrop-blur-xl backdrop-saturate-150 inline-flex h-16 w-16 items-center justify-center rounded-2xl text-4xl">
+            {dest.flagEmoji}
+          </span>
+          <h1 className="font-display mt-5 text-3xl font-extrabold leading-tight tracking-tight md:text-5xl">
+            Chip de viagem para {dest.name} <span className="text-gradient">(eSIM)</span>
           </h1>
-          <p className="mt-4 text-lg text-sky-100">{dest.heroText}</p>
+          <p className="mt-4 max-w-2xl text-lg text-white/65">{dest.heroText}</p>
         </div>
       </section>
 
       {introParagraphs.length > 0 && (
         <section className="mx-auto max-w-3xl px-4 py-10">
-          <h2 className="mb-4 text-2xl font-bold text-ink">
+          <h2 className="font-display mb-4 text-2xl font-extrabold text-ink">
             Internet móvel em {dest.name}: o que você precisa saber
           </h2>
-          <div className="prose prose-slate max-w-none space-y-4 text-slate-700">
+          <div className="prose prose-slate max-w-none space-y-4 text-ink-soft">
             {introParagraphs.map((p, i) => (
               <p key={i} className="leading-relaxed">{p}</p>
             ))}
@@ -144,16 +151,16 @@ export default async function DestinationPage({ params }: PageProps) {
       )}
 
       {dest.tipsJson && dest.tipsJson.length > 0 && (
-        <section className="bg-white px-4 py-10">
+        <section className="bg-surface-raised px-4 py-10">
           <div className="mx-auto max-w-3xl">
-            <h2 className="mb-6 text-2xl font-bold text-ink">
+            <h2 className="font-display mb-6 text-2xl font-extrabold text-ink">
               Dicas práticas para viajar para {dest.name}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {dest.tipsJson.map((tip, i) => (
-                <div key={i} className="rounded-xl border border-slate-200 p-4">
+                <div key={i} className="rounded-xl border border-ink/8 p-4">
                   <h3 className="font-semibold text-ink">{tip.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{tip.content}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{tip.content}</p>
                 </div>
               ))}
             </div>
@@ -163,7 +170,7 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-2xl font-bold text-ink">Planos disponíveis</h2>
+          <h2 className="font-display text-2xl font-extrabold text-ink">Planos disponíveis</h2>
           <Link
             href={`/quantos-gb-preciso?destino=${slug}`}
             className="text-sm font-medium text-primary hover:underline"
@@ -178,7 +185,7 @@ export default async function DestinationPage({ params }: PageProps) {
             ))}
           </div>
         ) : (
-          <p className="text-slate-600">
+          <p className="text-ink-soft">
             Nenhum plano ativo para este destino no momento.{" "}
             <a href="/planos" className="text-primary hover:underline">Veja todos os planos</a>.
           </p>
@@ -198,8 +205,8 @@ export default async function DestinationPage({ params }: PageProps) {
       </section>
 
       <section className="mx-auto max-w-3xl px-4 py-8">
-        <h2 className="mb-4 text-2xl font-bold text-ink">Como ativar seu eSIM</h2>
-        <ol className="list-decimal space-y-3 pl-5 text-slate-600">
+        <h2 className="font-display mb-4 text-2xl font-extrabold text-ink">Como ativar seu eSIM</h2>
+        <ol className="list-decimal space-y-3 pl-5 text-ink-soft">
           <li>Compre o plano e receba o QR code por e-mail após o pagamento.</li>
           <li>No iPhone: Ajustes → Celular → Adicionar eSIM → Usar QR Code.</li>
           <li>No Android: Configurações → Rede → SIM → Adicionar eSIM → Escanear QR.</li>

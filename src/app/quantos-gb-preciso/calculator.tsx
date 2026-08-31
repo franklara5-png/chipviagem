@@ -59,7 +59,7 @@ function DataGauge({ mb, maxMb }: { mb: number; maxMb: number }) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between text-sm">
-        <span className="text-slate-600">Estimativa com margem de segurança</span>
+        <span className="text-ink-soft">Estimativa com margem de segurança</span>
         <span className="text-2xl font-bold text-ink">{gb} GB</span>
       </div>
       <div className="h-4 overflow-hidden rounded-full bg-slate-200">
@@ -143,7 +143,7 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
         </p>
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
         <label className="block text-sm font-medium text-ink">
           Duração da viagem: <strong>{days} dias</strong>
         </label>
@@ -166,11 +166,11 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
         {HABITS.map((habit) => (
           <div
             key={habit.key}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            className="rounded-xl border border-ink/8 bg-surface-raised p-4"
           >
             <div className="mb-3">
               <p className="font-medium text-ink">{habit.label}</p>
-              <p className="text-xs text-slate-500">{habit.description}</p>
+              <p className="text-xs text-ink-soft">{habit.description}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {([0, 1, 2, 3] as UsageIntensity[]).map((level) => (
@@ -181,7 +181,7 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
                   className={`rounded-lg px-3 py-1.5 text-sm transition ${
                     habits[habit.key] === level
                       ? "bg-primary text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      : "bg-slate-100 text-ink-soft hover:bg-slate-200"
                   }`}
                 >
                   {INTENSITY_LABELS[level]}
@@ -194,7 +194,7 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
 
       <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-white p-6">
         <DataGauge mb={totalMb} maxMb={maxGaugeMb} />
-        <p className="mt-3 text-sm text-slate-600">
+        <p className="mt-3 text-sm text-ink-soft">
           ~{Math.round(dailyMb)} MB/dia · margem de segurança de 30% incluída
         </p>
 
@@ -217,7 +217,7 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
             {recommended.map((plan) => (
               <div
                 key={plan.id}
-                className="flex flex-col rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+                className="flex flex-col rounded-xl border border-ink/8 bg-surface-raised p-5 shadow-sm"
               >
                 {plan.isFeatured && (
                   <span className="mb-2 w-fit rounded-full bg-accent/10 px-2 py-0.5 text-xs font-semibold text-accent">
@@ -225,8 +225,8 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
                   </span>
                 )}
                 <h3 className="font-semibold text-ink">{plan.name}</h3>
-                <p className="text-sm text-slate-500">{plan.region}</p>
-                <div className="mt-2 flex gap-3 text-sm text-slate-600">
+                <p className="text-sm text-ink-soft">{plan.region}</p>
+                <div className="mt-2 flex gap-3 text-sm text-ink-soft">
                   <span>{formatDataMb(plan.dataAmountMb)}</span>
                   <span>{plan.validityDays} dias</span>
                 </div>
@@ -238,14 +238,14 @@ export function GbCalculator({ plans, destinoSlug, destinoName }: CalculatorProp
                 </p>
                 <Link
                   href={`/checkout/${plan.slug}`}
-                  className="mt-4 block rounded-lg bg-accent py-2.5 text-center text-sm font-semibold text-white hover:bg-orange-600"
+                  className="mt-4 block rounded-lg bg-accent py-2.5 text-center text-sm font-semibold text-white hover:bg-accent-dark"
                 >
                   Comprar agora
                 </Link>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-center text-sm text-slate-500">
+          <p className="mt-4 text-center text-sm text-ink-soft">
             <Link href="/planos" className="text-primary hover:underline">
               Ver todos os planos →
             </Link>

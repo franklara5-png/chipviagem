@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { FaqSection, faqJsonLd } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { PageHero } from "@/components/page-hero";
+import { CtaBand } from "@/components/cta-band";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const metadata = getSeoMetadata({
@@ -67,52 +68,36 @@ export default function ChipInternacionalPage() {
     <PublicLayout>
       <JsonLd data={faqJsonLd(faqItems)} />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-16 text-white md:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-bold md:text-5xl">
-            Chip Internacional: eSIM para Qualquer País
-          </h1>
-          <p className="mt-4 text-lg text-sky-100 md:text-xl">
-            Um único eSIM para mais de 100 países. Cobertura global, internet rápida e ativação em minutos.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ 100+ países</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ 4G/LTE</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Entrega imediata</span>
-          </div>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver planos internacionais
-          </Link>
-        </div>
-      </section>
+      <PageHero
+        title="Chip internacional: eSIM para qualquer país"
+        subtitle="Um único eSIM para mais de 100 países. Cobertura global, internet rápida e ativação em minutos."
+        badges={["100+ países", "4G/LTE", "Entrega imediata"]}
+        cta={{ href: "/planos", label: "Ver planos internacionais" }}
+      />
 
       {/* Benefits */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="mb-10 text-center text-2xl font-bold text-ink md:text-3xl">
+        <h2 className="font-display mb-10 text-center text-2xl font-extrabold text-ink md:text-3xl">
           Por que escolher o chip internacional da ChipViagem?
         </h2>
         <div className="grid gap-6 sm:grid-cols-2">
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="rounded-xl border border-slate-200 bg-white p-6 transition hover:border-primary hover:shadow-md"
+              className="rounded-xl border border-ink/8 bg-surface-raised p-6 transition hover:border-primary hover:shadow-md"
             >
               <span className="text-3xl">{b.icon}</span>
               <h3 className="mt-3 text-lg font-semibold text-ink">{b.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{b.desc}</p>
+              <p className="mt-2 text-sm text-ink-soft">{b.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Como funciona */}
-      <section className="bg-slate-50 px-4 py-16">
+      <section className="bg-surface px-4 py-16">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-2xl font-bold text-ink md:text-3xl">
+          <h2 className="font-display text-2xl font-extrabold text-ink md:text-3xl">
             Como usar seu chip internacional
           </h2>
           <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -138,30 +123,19 @@ export default function ChipInternacionalPage() {
                   {item.step}
                 </div>
                 <h3 className="mt-4 font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                <p className="mt-2 text-sm text-ink-soft">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-primary px-4 py-16 text-white">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Pronto para viajar conectado?
-          </h2>
-          <p className="mt-4 text-lg text-sky-100">
-            Escolha o plano internacional ideal para sua viagem. Pague no Pix e receba seu eSIM em minutos.
-          </p>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver planos
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        title="Pronto para viajar conectado?"
+        subtitle="Escolha o plano internacional ideal para sua viagem. Pague no Pix e receba seu eSIM em minutos."
+        href="/planos"
+        label="Ver planos"
+      />
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 py-16">

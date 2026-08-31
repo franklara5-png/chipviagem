@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { FaqSection, faqJsonLd } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { PageHero } from "@/components/page-hero";
+import { CtaBand } from "@/components/cta-band";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const metadata = getSeoMetadata({
@@ -74,38 +75,22 @@ export default function ComparativoChipViagemPage() {
     <PublicLayout>
       <JsonLd data={faqJsonLd(faqItems)} />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-16 text-white md:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-bold md:text-5xl">
-            Comparativo de Chip de Viagem: Qual o Melhor?
-          </h1>
-          <p className="mt-4 text-lg text-sky-100 md:text-xl">
-            Compare eSIMs, roaming internacional e chips físicos. Descubra a melhor opção para sua viagem.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Comparação imparcial</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Preços em reais</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Atualizado 2026</span>
-          </div>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver planos e preços
-          </Link>
-        </div>
-      </section>
+      <PageHero
+        title="Comparativo de chip de viagem: qual o melhor?"
+        subtitle="Compare eSIMs, roaming internacional e chips físicos. Descubra a melhor opção para sua viagem."
+        badges={["Comparação imparcial", "Preços em reais", "Atualizado 2026"]}
+        cta={{ href: "/planos", label: "Ver planos e preços" }}
+      />
 
       {/* Tabela comparativa */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="mb-8 text-center text-2xl font-bold text-ink md:text-3xl">
+        <h2 className="font-display mb-8 text-center text-2xl font-extrabold text-ink md:text-3xl">
           eSIM vs. Roaming vs. Chip Local
         </h2>
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-x-auto rounded-xl border border-ink/8 bg-surface-raised">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
+              <tr className="border-b border-ink/8 bg-surface">
                 <th className="px-6 py-4 font-semibold text-ink">Critério</th>
                 {comparisons.map((c) => (
                   <th
@@ -118,34 +103,34 @@ export default function ComparativoChipViagemPage() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-ink/6">
                 <td className="px-6 py-3 font-medium text-ink">Preço (médio)</td>
                 {comparisons.map((c) => (
-                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5 font-semibold text-primary" : "text-slate-600"}`}>
+                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5 font-semibold text-primary" : "text-ink-soft"}`}>
                     {c.price}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-ink/6">
                 <td className="px-6 py-3 font-medium text-ink">Ativação</td>
                 {comparisons.map((c) => (
-                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-slate-600"}`}>
+                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-ink-soft"}`}>
                     {c.activation}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-ink/6">
                 <td className="px-6 py-3 font-medium text-ink">Cobertura</td>
                 {comparisons.map((c) => (
-                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-slate-600"}`}>
+                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-ink-soft"}`}>
                     {c.coverage}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-ink/6">
                 <td className="px-6 py-3 font-medium text-ink">Suporte</td>
                 {comparisons.map((c) => (
-                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-slate-600"}`}>
+                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-ink-soft"}`}>
                     {c.support}
                   </td>
                 ))}
@@ -153,7 +138,7 @@ export default function ComparativoChipViagemPage() {
               <tr>
                 <td className="px-6 py-3 font-medium text-ink">Mantém número BR</td>
                 {comparisons.map((c) => (
-                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-slate-600"}`}>
+                  <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5" : "text-ink-soft"}`}>
                     {c.dualSim ? "✅ Sim" : "❌ Não"}
                   </td>
                 ))}
@@ -164,9 +149,9 @@ export default function ComparativoChipViagemPage() {
       </section>
 
       {/* Vantagens do eSIM */}
-      <section className="bg-slate-50 px-4 py-16">
+      <section className="bg-surface px-4 py-16">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-2xl font-bold text-ink md:text-3xl">
+          <h2 className="font-display text-center text-2xl font-extrabold text-ink md:text-3xl">
             Por que o eSIM é a melhor escolha?
           </h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -190,33 +175,22 @@ export default function ComparativoChipViagemPage() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-slate-200 bg-white p-6"
+                className="rounded-xl border border-ink/8 bg-surface-raised p-6"
               >
                 <h3 className="text-lg font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+                <p className="mt-2 text-sm text-ink-soft">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-primary px-4 py-16 text-white">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Encontre o plano ideal para sua viagem
-          </h2>
-          <p className="mt-4 text-lg text-sky-100">
-            Compare planos, escolha a franquia e a duração, pague no Pix e viaje conectado. Simples assim.
-          </p>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver todos os planos
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        title="Encontre o plano ideal para sua viagem"
+        subtitle="Compare planos, escolha a franquia e a duração, pague no Pix e viaje conectado. Simples assim."
+        href="/planos"
+        label="Ver todos os planos"
+      />
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 py-16">

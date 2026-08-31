@@ -30,8 +30,8 @@ export default async function SuportePage() {
   return (
     <PublicLayout>
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="text-3xl font-bold text-ink">Suporte</h1>
-        <p className="mt-4 text-slate-600">
+        <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">Suporte</h1>
+        <p className="mt-4 text-ink-soft">
           Nossa equipe está pronta para ajudar com instalação, ativação e qualquer dúvida sobre seu eSIM.
         </p>
 
@@ -39,7 +39,7 @@ export default async function SuportePage() {
           {hasWhatsApp && (
             <div className="rounded-xl border border-green-200 bg-green-50 p-6">
               <h2 className="font-semibold text-ink">WhatsApp</h2>
-              <p className="mt-1 text-sm text-slate-600">Atendimento mais rápido — resposta em minutos.</p>
+              <p className="mt-1 text-sm text-ink-soft">Atendimento mais rápido — resposta em minutos.</p>
               <a
                 href={whatsappUrl}
                 target="_blank"
@@ -49,31 +49,31 @@ export default async function SuportePage() {
               >
                 Chamar no WhatsApp
               </a>
-              <p className="mt-2 text-sm text-slate-500">{formatWhatsAppDisplay(whatsappNumber)}</p>
+              <p className="mt-2 text-sm text-ink-soft">{formatWhatsAppDisplay(whatsappNumber)}</p>
             </div>
           )}
 
-          <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <div className="rounded-xl border border-ink/8 bg-surface-raised p-6">
             <h2 className="font-semibold text-ink">E-mail</h2>
             <a href={`mailto:${supportEmail}`} className="mt-2 block text-primary hover:underline">
               {supportEmail}
             </a>
-            <p className="mt-4 text-sm text-slate-500">Respondemos em até 24 horas úteis.</p>
+            <p className="mt-4 text-sm text-ink-soft">Respondemos em até 24 horas úteis.</p>
           </div>
         </div>
 
         <div className="mt-8 space-y-4">
           <h2 className="font-semibold text-ink">Dúvidas comuns</h2>
-          <details className="rounded-lg border border-slate-200 bg-white p-4">
+          <details className="rounded-lg border border-ink/8 bg-surface-raised p-4">
             <summary className="cursor-pointer font-medium">Não recebi o e-mail com o QR code</summary>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-ink-soft">
               Verifique a caixa de spam. Você também pode acessar seu pedido diretamente pela página de confirmação
               ou pelo link enviado após a compra.
             </p>
           </details>
-          <details className="rounded-lg border border-slate-200 bg-white p-4">
+          <details className="rounded-lg border border-ink/8 bg-surface-raised p-4">
             <summary className="cursor-pointer font-medium">O QR code não funciona no meu celular</summary>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-ink-soft">
               Confirme se seu aparelho suporta eSIM. Em alguns Android, é necessário inserir o código de ativação
               manualmente nas configurações de rede.
             </p>

@@ -211,9 +211,9 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
 
   if (step === "pix" && pixData) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-ink">Pague com PIX</h2>
-        <p className="mt-2 text-sm text-slate-600">
+        <p className="mt-2 text-sm text-ink-soft">
           Escaneie o QR code ou copie o código abaixo. A confirmação é automática.
         </p>
 
@@ -221,16 +221,16 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           <img
             src={`data:image/png;base64,${pixData.encodedImage}`}
             alt="QR Code PIX"
-            className="h-56 w-56 rounded-lg border border-slate-200"
+            className="h-56 w-56 rounded-lg border border-ink/8"
           />
 
           <div className="w-full">
-            <label className="text-xs font-medium text-slate-500">Código PIX copia e cola</label>
+            <label className="text-xs font-medium text-ink-soft">Código PIX copia e cola</label>
             <div className="mt-1 flex gap-2">
               <input
                 readOnly
                 value={pixData.payload}
-                className="flex-1 truncate rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700"
+                className="flex-1 truncate rounded-lg border border-ink/8 bg-surface px-3 py-2 text-xs text-ink-soft"
               />
               <button
                 type="button"
@@ -243,12 +243,12 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           </div>
 
           {pixData.expirationDate && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-soft">
               Válido até {new Date(pixData.expirationDate).toLocaleString("pt-BR")}
             </p>
           )}
 
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-sm text-ink-soft">
             <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             Aguardando confirmação do pagamento…
           </div>
@@ -259,22 +259,22 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
 
   if (step === "processing") {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-xl border border-ink/8 bg-surface-raised p-8 text-center shadow-sm">
         <span className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         <p className="mt-4 font-medium text-ink">Processando pagamento…</p>
-        <p className="mt-1 text-sm text-slate-500">Redirecionando para o status do pedido.</p>
+        <p className="mt-1 text-sm text-ink-soft">Redirecionando para o status do pedido.</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">Seus dados</h2>
 
           <div className="mt-4 space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="name" className="block text-sm font-medium text-ink-soft">
                 Nome completo
               </label>
               <input
@@ -283,13 +283,13 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="João Silva"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="email" className="block text-sm font-medium text-ink-soft">
                 E-mail
               </label>
               <input
@@ -298,13 +298,13 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="joao@email.com"
               />
             </div>
 
             <div>
-              <label htmlFor="cpf" className="block text-sm font-medium text-slate-700">
+              <label htmlFor="cpf" className="block text-sm font-medium text-ink-soft">
                 CPF
               </label>
               <input
@@ -314,14 +314,14 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                 inputMode="numeric"
                 value={cpf}
                 onChange={(e) => handleCpfChange(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="000.000.000-00"
               />
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">Forma de pagamento</h2>
 
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -331,7 +331,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
               className={`rounded-lg border-2 px-4 py-3 text-sm font-medium transition ${
                 paymentMethod === "pix"
                   ? "border-primary bg-primary/5 text-primary"
-                  : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  : "border-ink/8 text-ink-soft hover:border-slate-300"
               }`}
             >
               PIX
@@ -342,7 +342,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
               className={`rounded-lg border-2 px-4 py-3 text-sm font-medium transition ${
                 paymentMethod === "card"
                   ? "border-primary bg-primary/5 text-primary"
-                  : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  : "border-ink/8 text-ink-soft hover:border-slate-300"
               }`}
             >
               Cartão de crédito
@@ -350,9 +350,9 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           </div>
 
           {paymentMethod === "card" && (
-            <div className="mt-4 space-y-4 border-t border-slate-100 pt-4">
+            <div className="mt-4 space-y-4 border-t border-ink/6 pt-4">
               <div>
-                <label htmlFor="cardHolder" className="block text-sm font-medium text-slate-700">
+                <label htmlFor="cardHolder" className="block text-sm font-medium text-ink-soft">
                   Nome no cartão
                 </label>
                 <input
@@ -361,12 +361,12 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                   required
                   value={cardHolder}
                   onChange={(e) => setCardHolder(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label htmlFor="cardNumber" className="block text-sm font-medium text-slate-700">
+                <label htmlFor="cardNumber" className="block text-sm font-medium text-ink-soft">
                   Número do cartão
                 </label>
                 <input
@@ -376,14 +376,14 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                   inputMode="numeric"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, "").slice(0, 16))}
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="0000 0000 0000 0000"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label htmlFor="expMonth" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="expMonth" className="block text-sm font-medium text-ink-soft">
                     Mês
                   </label>
                   <input
@@ -394,12 +394,12 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                     maxLength={2}
                     value={cardExpiryMonth}
                     onChange={(e) => setCardExpiryMonth(e.target.value.replace(/\D/g, "").slice(0, 2))}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="MM"
                   />
                 </div>
                 <div>
-                  <label htmlFor="expYear" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="expYear" className="block text-sm font-medium text-ink-soft">
                     Ano
                   </label>
                   <input
@@ -410,12 +410,12 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                     maxLength={4}
                     value={cardExpiryYear}
                     onChange={(e) => setCardExpiryYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="AAAA"
                   />
                 </div>
                 <div>
-                  <label htmlFor="ccv" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="ccv" className="block text-sm font-medium text-ink-soft">
                     CVV
                   </label>
                   <input
@@ -426,7 +426,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                     maxLength={4}
                     value={cardCcv}
                     onChange={(e) => setCardCcv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="123"
                   />
                 </div>
@@ -434,7 +434,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="postalCode" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="postalCode" className="block text-sm font-medium text-ink-soft">
                     CEP
                   </label>
                   <input
@@ -444,12 +444,12 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                     inputMode="numeric"
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="00000000"
                   />
                 </div>
                 <div>
-                  <label htmlFor="addressNumber" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="addressNumber" className="block text-sm font-medium text-ink-soft">
                     Número
                   </label>
                   <input
@@ -458,13 +458,13 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                     required
                     value={addressNumber}
                     onChange={(e) => setAddressNumber(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-slate-700">
+                <label htmlFor="phone" className="block text-sm font-medium text-ink-soft">
                   Telefone
                 </label>
                 <input
@@ -473,7 +473,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="mt-1 w-full rounded-lg border border-ink/8 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="11999999999"
                 />
               </div>
@@ -481,7 +481,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">Cupom de desconto</h2>
           <div className="mt-4 flex gap-2">
             <input
@@ -489,7 +489,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
               placeholder="Código do cupom"
-              className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              className="flex-1 rounded-lg border border-ink/8 px-3 py-2 text-sm uppercase focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
             {appliedCoupon ? (
               <button
@@ -499,7 +499,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                   setCouponCode("");
                   setCouponError(null);
                 }}
-                className="shrink-0 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                className="shrink-0 rounded-lg border border-ink/8 px-4 py-2 text-sm font-medium text-ink-soft hover:bg-surface"
               >
                 Remover
               </button>
@@ -508,7 +508,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
                 type="button"
                 onClick={() => applyCoupon(couponCode)}
                 disabled={couponLoading || !couponCode.trim()}
-                className="shrink-0 rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-ink-soft hover:bg-slate-200 disabled:opacity-50"
               >
                 {couponLoading ? "…" : "Aplicar"}
               </button>
@@ -521,15 +521,15 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
           )}
           {couponError && <p className="mt-2 text-sm text-red-600">{couponError}</p>}
           {autoApplied && appliedCoupon && (
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-ink-soft">
               Desconto de indicação (R$ {REFERRAL_FRIEND_DISCOUNT_BRL}) aplicado automaticamente.
             </p>
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-ink/8 bg-surface-raised p-6 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600">Total</span>
+            <span className="text-sm text-ink-soft">Total</span>
             <div className="text-right">
               {discountAmount > 0 && (
                 <span className="mr-2 text-sm text-slate-400 line-through">
@@ -539,7 +539,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
               <span className="text-2xl font-bold text-primary">{formatBrl(finalPrice)}</span>
             </div>
           </div>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-ink-soft">
             {plan.name} · {formatDataMb(plan.dataAmountMb)} · {plan.validityDays} dias
           </p>
         </div>
@@ -553,7 +553,7 @@ export function CheckoutForm({ plan, defaultName, defaultEmail }: CheckoutFormPr
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-lg bg-accent py-3 text-sm font-semibold text-white transition hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Processando…" : paymentMethod === "pix" ? "Gerar PIX" : "Pagar com cartão"}
         </button>

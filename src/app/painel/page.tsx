@@ -46,8 +46,8 @@ export default async function PainelPage() {
           {user.image ? <img src={user.image} alt={user.name ?? ""} className="w-16 h-16 rounded-full mx-auto" /> :
           <div className="w-16 h-16 rounded-full bg-accent text-white flex items-center justify-center text-xl font-bold mx-auto">
             {user.name?.charAt(0)?.toUpperCase() ?? "?"}</div>}
-          <h1 className="text-2xl font-bold text-ink">Olá, {user.name?.split(" ")[0]}!</h1>
-          <p className="text-slate-500 text-sm">{user.email}</p>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink">Olá, {user.name?.split(" ")[0]}!</h1>
+          <p className="text-ink-soft text-sm">{user.email}</p>
           <LogoutButton />
         </div>
 
@@ -56,14 +56,14 @@ export default async function PainelPage() {
             <ShoppingCart className="w-5 h-5 text-slate-400" /> Seus pedidos
           </h2>
           {pedidosList.length === 0 ? (
-            <div className="bg-slate-50 rounded-xl p-8 text-center border border-slate-200">
+            <div className="bg-surface rounded-xl p-8 text-center border border-ink/8">
               <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500 text-sm">Nenhum pedido encontrado. Seus eSIMs aparecerão aqui.</p>
+              <p className="text-ink-soft text-sm">Nenhum pedido encontrado. Seus eSIMs aparecerão aqui.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {pedidosList.map((p) => (
-                <div key={p.id} className="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-5 py-4 hover:border-slate-300 transition-colors">
+                <div key={p.id} className="flex items-center justify-between bg-surface-raised border border-ink/8 rounded-xl px-5 py-4 hover:border-slate-300 transition-colors">
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
                       {STATUS_ICONS[p.status] ?? <Clock className="w-4 h-4 text-slate-400" />}

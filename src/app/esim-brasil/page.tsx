@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { FaqSection, faqJsonLd } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
+import { PageHero } from "@/components/page-hero";
+import { CtaBand } from "@/components/cta-band";
 import { getSeoMetadata } from "@/lib/seo";
 
 export const metadata = getSeoMetadata({
@@ -86,65 +87,49 @@ export default function EsimBrasilPage() {
     <PublicLayout>
       <JsonLd data={faqJsonLd(faqItems)} />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-primary-dark px-4 py-16 text-white md:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-bold md:text-5xl">
-            eSIM Brasil: Chip Virtual para Viajar ao Brasil
-          </h1>
-          <p className="mt-4 text-lg text-sky-100 md:text-xl">
-            Internet rápida para turistas. Cobertura nacional, ativação em minutos e pagamento internacional.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Cobertura nacional</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ 4G/LTE</span>
-            <span className="rounded-full bg-white/20 px-4 py-2">✓ Ativação em minutos</span>
-          </div>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Ver planos para o Brasil
-          </Link>
-        </div>
-      </section>
+      <PageHero
+        title="eSIM Brasil: chip virtual para viajar ao Brasil"
+        subtitle="Internet rápida para turistas. Cobertura nacional, ativação em minutos e pagamento internacional."
+        badges={["Cobertura nacional", "4G/LTE", "Ativação em minutos"]}
+        cta={{ href: "/planos", label: "Ver planos para o Brasil" }}
+      />
 
       {/* Benefits */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="mb-10 text-center text-2xl font-bold text-ink md:text-3xl">
+        <h2 className="font-display mb-10 text-center text-2xl font-extrabold text-ink md:text-3xl">
           Por que escolher o eSIM Brasil da ChipViagem?
         </h2>
         <div className="grid gap-6 sm:grid-cols-2">
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="rounded-xl border border-slate-200 bg-white p-6 transition hover:border-primary hover:shadow-md"
+              className="rounded-xl border border-ink/8 bg-surface-raised p-6 transition hover:border-primary hover:shadow-md"
             >
               <span className="text-3xl">{b.icon}</span>
               <h3 className="mt-3 text-lg font-semibold text-ink">{b.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{b.desc}</p>
+              <p className="mt-2 text-sm text-ink-soft">{b.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Dicas para turistas */}
-      <section className="bg-slate-50 px-4 py-16">
+      <section className="bg-surface px-4 py-16">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-2xl font-bold text-ink md:text-3xl">
+          <h2 className="font-display text-center text-2xl font-extrabold text-ink md:text-3xl">
             Dicas de internet para turistas no Brasil
           </h2>
-          <p className="mt-4 text-center text-slate-600">
+          <p className="mt-4 text-center text-ink-soft">
             Veja como usar seu eSIM nas principais cidades brasileiras
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
             {touristTips.map((t) => (
               <div
                 key={t.city}
-                className="rounded-xl border border-slate-200 bg-white p-6"
+                className="rounded-xl border border-ink/8 bg-surface-raised p-6"
               >
                 <h3 className="font-semibold text-ink">{t.city}</h3>
-                <p className="mt-2 text-sm text-slate-600">{t.tip}</p>
+                <p className="mt-2 text-sm text-ink-soft">{t.tip}</p>
               </div>
             ))}
           </div>
@@ -153,7 +138,7 @@ export default function EsimBrasilPage() {
 
       {/* Como ativar */}
       <section className="mx-auto max-w-4xl px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold text-ink md:text-3xl">
+        <h2 className="font-display text-2xl font-extrabold text-ink md:text-3xl">
           Como ativar seu eSIM em 3 passos
         </h2>
         <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -179,29 +164,18 @@ export default function EsimBrasilPage() {
                 {item.step}
               </div>
               <h3 className="mt-4 font-semibold text-ink">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
+              <p className="mt-2 text-sm text-ink-soft">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-primary px-4 py-16 text-white">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Chegue ao Brasil conectado
-          </h2>
-          <p className="mt-4 text-lg text-sky-100">
-            Garanta seu eSIM antes de embarcar. Internet rápida, cobertura nacional e suporte em português, inglês ou espanhol.
-          </p>
-          <Link
-            href="/planos"
-            className="mt-8 inline-block rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600"
-          >
-            Comprar eSIM Brasil
-          </Link>
-        </div>
-      </section>
+      <CtaBand
+        title="Chegue ao Brasil conectado"
+        subtitle="Garanta seu eSIM antes de embarcar. Internet rápida, cobertura nacional e suporte em português, inglês ou espanhol."
+        href="/planos"
+        label="Comprar eSIM Brasil"
+      />
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 py-16">

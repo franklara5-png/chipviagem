@@ -15,6 +15,10 @@ export function VisitTracker() {
 
   useEffect(() => {
     if (!pathname) return;
+    // Não há banco de desenvolvimento: o dev local aponta para o Neon de
+    // produção, então sem esta guarda cada `npm run dev` insere visitas
+    // falsas na mesma tabela que alimenta o dashboard.
+    if (process.env.NODE_ENV !== "production") return;
     if (!isTrackablePath(pathname)) return;
     if (typeof navigator !== "undefined" && isBotUserAgent(navigator.userAgent)) return;
 

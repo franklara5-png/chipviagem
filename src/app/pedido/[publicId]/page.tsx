@@ -16,8 +16,8 @@ export default async function PedidoPage({ params }: PedidoPageProps) {
     <PublicLayout>
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-ink">Status do pedido</h1>
-          <p className="mt-2 font-mono text-sm text-slate-500">{publicId}</p>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink">Status do pedido</h1>
+          <p className="mt-2 font-mono text-sm text-ink-soft">{publicId}</p>
         </div>
 
         <OrderStatus publicId={publicId} />

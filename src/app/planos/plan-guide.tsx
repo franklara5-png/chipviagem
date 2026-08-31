@@ -10,9 +10,9 @@ export function PlanGuide() {
   const margem = Math.round(SAFETY_MARGIN * 100);
 
   return (
-    <section className="mt-16 border-t border-slate-200 pt-12">
-      <h2 className="text-2xl font-bold text-ink">Como escolher a franquia de dados</h2>
-      <p className="mt-3 max-w-2xl text-slate-600">
+    <section className="mt-16 border-t border-ink/8 pt-12">
+      <h2 className="font-display text-2xl font-extrabold text-ink">Como escolher a franquia de dados</h2>
+      <p className="mt-3 max-w-2xl text-ink-soft">
         A conta é simples: quanto você consome por dia, vezes os dias de viagem. O que costuma
         pesar não é o WhatsApp — é vídeo, rede social e hotspot para o notebook. Estes são os
         valores médios por hora que usamos na calculadora:
@@ -21,7 +21,7 @@ export function PlanGuide() {
       <div className="mt-6 overflow-x-auto">
         <table className="w-full min-w-[520px] border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-200 text-slate-500">
+            <tr className="border-b border-ink/8 text-ink-soft">
               <th className="pb-2 pr-4 font-medium">Atividade</th>
               <th className="pb-2 pr-4 font-medium">Exemplos</th>
               <th className="pb-2 font-medium whitespace-nowrap">Consumo por hora</th>
@@ -29,10 +29,10 @@ export function PlanGuide() {
           </thead>
           <tbody>
             {HABITS.map((h) => (
-              <tr key={h.key} className="border-b border-slate-100">
+              <tr key={h.key} className="border-b border-ink/6">
                 <td className="py-2.5 pr-4 font-medium text-ink">{h.label}</td>
-                <td className="py-2.5 pr-4 text-slate-500">{h.description}</td>
-                <td className="py-2.5 whitespace-nowrap text-slate-700">
+                <td className="py-2.5 pr-4 text-ink-soft">{h.description}</td>
+                <td className="py-2.5 whitespace-nowrap text-ink-soft">
                   ~{h.mbPerHour[2]} MB
                 </td>
               </tr>
@@ -41,7 +41,7 @@ export function PlanGuide() {
         </table>
       </div>
 
-      <p className="mt-4 text-sm text-slate-500">
+      <p className="mt-4 text-sm text-ink-soft">
         Valores para uso moderado, com o vídeo em qualidade média. Em cima do total estimado,
         a calculadora ainda soma {margem}% de margem de segurança — rede lenta faz o app
         recarregar, e recarga consome de novo.
@@ -50,13 +50,13 @@ export function PlanGuide() {
       <div className="mt-6 flex flex-wrap gap-3">
         <Link
           href="/quantos-gb-preciso"
-          className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600"
+          className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-dark"
         >
           Calcular quantos GB eu preciso
         </Link>
         <Link
           href="/comparativo-chip-viagem"
-          className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-primary hover:text-primary"
+          className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-ink-soft transition hover:border-primary hover:text-primary"
         >
           Comparar eSIM, chip físico e roaming
         </Link>
@@ -87,16 +87,16 @@ const INCLUSOS = [
 export function PlanIncludes() {
   return (
     <section className="mt-14">
-      <h2 className="text-2xl font-bold text-ink">O que está incluído em todos os planos</h2>
+      <h2 className="font-display text-2xl font-extrabold text-ink">O que está incluído em todos os planos</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {INCLUSOS.map((i) => (
-          <div key={i.titulo} className="rounded-xl border border-slate-200 bg-white p-5">
+          <div key={i.titulo} className="rounded-xl border border-ink/8 bg-surface-raised p-5">
             <h3 className="font-semibold text-ink">{i.titulo}</h3>
-            <p className="mt-1.5 text-sm text-slate-600">{i.texto}</p>
+            <p className="mt-1.5 text-sm text-ink-soft">{i.texto}</p>
           </div>
         ))}
       </div>
-      <p className="mt-5 text-sm text-slate-500">
+      <p className="mt-5 text-sm text-ink-soft">
         Antes de comprar, confira se o seu aparelho é compatível: iPhones a partir do XS e a
         maioria dos Android recentes (Samsung Galaxy S20+, Google Pixel 3+) suportam eSIM.
         O passo a passo completo está em{" "}

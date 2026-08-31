@@ -81,10 +81,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           <article className="min-w-0">
             <Link href="/blog" className="text-sm text-primary hover:underline">← Voltar ao blog</Link>
             <header className="mt-4">
-              <time className="text-sm text-slate-500">{post.date}</time>
-              <h1 className="mt-2 text-3xl font-bold text-ink md:text-4xl">{post.title}</h1>
-              <p className="mt-2 text-slate-600">{post.description}</p>
-              <p className="mt-2 text-sm text-slate-500">{post.author} · {post.readingTime}</p>
+              <time className="text-sm text-ink-soft">{post.date}</time>
+              <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">{post.title}</h1>
+              <p className="mt-2 text-ink-soft">{post.description}</p>
+              <p className="mt-2 text-sm text-ink-soft">{post.author} · {post.readingTime}</p>
             </header>
             <div className="prose prose-slate mt-8 max-w-none">
               <MDXRemote source={post.content} />
@@ -96,12 +96,12 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {headings.length > 0 && (
             <aside className="hidden lg:block">
-              <nav className="sticky top-20 rounded-lg border border-slate-200 bg-white p-4">
+              <nav className="sticky top-20 rounded-lg border border-ink/8 bg-surface-raised p-4">
                 <h2 className="mb-3 text-sm font-semibold text-ink">Neste artigo</h2>
                 <ul className="space-y-2 text-sm">
                   {headings.map((h) => (
                     <li key={h.id} className={h.level === 3 ? "pl-3" : ""}>
-                      <a href={`#${h.id}`} className="text-slate-600 hover:text-primary">
+                      <a href={`#${h.id}`} className="text-ink-soft hover:text-primary">
                         {h.text}
                       </a>
                     </li>
