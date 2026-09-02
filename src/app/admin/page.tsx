@@ -10,7 +10,15 @@ import { getReviewStats } from "@/lib/reviews";
 import { getReferralStats30d } from "@/lib/referrals";
 import { getWhatsAppClicks7d } from "@/lib/analytics";
 import { getTopChannelRevenueShare30d } from "@/lib/acquisition-stats";
+import {
+  getRevenueByMonth,
+  getRevenueByYear,
+  fillMonthlyRevenue,
+  fillYearlyRevenue,
+  formatMonthLabel,
+} from "@/lib/revenue-stats";
 import { SalesChart } from "@/components/admin/sales-chart";
+import { RevenueByPeriodChart } from "@/components/admin/revenue-by-period-chart";
 import { AlertTriangle } from "lucide-react";
 
 const PAID_STATUSES = ["paid", "provisioning", "delivered"] as const;
@@ -21,10 +29,6 @@ function startOfDay(date: Date) {
   return d;
 }
 
-function startOfMonth(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
-
 export default async function AdminDashboardPage() {
   const now = new Date();
   const todayStart = startOfDay(now);
@@ -32,14 +36,6 @@ export default async function AdminDashboardPage() {
   days7.setDate(days7.getDate() - 7);
   const days30 = new Date(now);
   days30.setDate(days30.getDate() - 30);
-  const monthStart = startOfMonth(now);
-
-  const paidStatuses = inArray(orders.status, [...PAID_STATUSES]);
-
-  const [revenueMonth] = await db
-    .select({ total: sum(orders.amountBrl) })
-    .from(orders)
-    .where(and(paidStatuses, gte(orders.paidAt, monthStart), eq(orders.status, "delivered")));
 
   const [ordersToday] = await db
     .select({ total: count() })
@@ -104,6 +100,22 @@ export default async function AdminDashboardPage() {
     .orderBy(desc(count()))
     .limit(5);
 
+  const [revenueByMonthRaw, revenueByYearRaw] = await Promise.all([
+    getRevenueByMonth(12),
+    getRevenueByYear(5),
+  ]);
+  const revenueByMonth = fillMonthlyRevenue(revenueByMonthRaw, 12);
+  const revenueByYear = fillYearlyRevenue(revenueByYearRaw, 5);
+  // Último item da série = mês corrente em São Paulo (fillMonthlyRevenue sempre
+  // devolve a janela completa, então o card e a tabela nunca divergem).
+  const currentMonthRevenue = revenueByMonth.at(-1)?.revenueBrl ?? 0;
+
+  const revenueChartData = revenueByMonth.map((row) => ({
+    label: formatMonthLabel(row.periodKey),
+    revenue: row.revenueBrl,
+    orders: row.orders,
+  }));
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold text-ink">Dashboard</h1>
@@ -133,7 +145,7 @@ export default async function AdminDashboardPage() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-8">
-        <StatCard label="Receita do mês" value={formatBrl(revenueMonth?.total ?? 0)} />
+        <StatCard label="Receita do mês" value={formatBrl(currentMonthRevenue)} />
         <StatCard label="Pedidos hoje" value={String(ordersToday?.total ?? 0)} />
         <StatCard label="Pedidos 7 dias" value={String(orders7d?.total ?? 0)} />
         <StatCard label="Pedidos 30 dias" value={String(orders30d?.total ?? 0)} />
@@ -204,6 +216,70 @@ export default async function AdminDashboardPage() {
           ) : (
             <p className="text-sm text-slate-400">Sem dados</p>
           )}
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <h2 className="mb-4 text-sm font-medium text-slate-600">Receita por período</h2>
+
+        <RevenueByPeriodChart data={revenueChartData} />
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <div>
+            <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              Por mês
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-left text-xs text-slate-500">
+                    <th className="py-2 pr-4 font-medium">Mês</th>
+                    <th className="py-2 pr-4 font-medium">Pedidos</th>
+                    <th className="py-2 pr-4 font-medium">Receita</th>
+                    <th className="py-2 font-medium">Ticket médio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...revenueByMonth].reverse().map((row) => (
+                    <tr key={row.periodKey} className="border-b border-slate-100 last:border-0">
+                      <td className="py-2 pr-4 text-ink">{formatMonthLabel(row.periodKey)}</td>
+                      <td className="py-2 pr-4 text-slate-600">{row.orders}</td>
+                      <td className="py-2 pr-4 text-slate-600">{formatBrl(row.revenueBrl)}</td>
+                      <td className="py-2 text-slate-600">{formatBrl(row.averageTicketBrl)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              Por ano
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-left text-xs text-slate-500">
+                    <th className="py-2 pr-4 font-medium">Ano</th>
+                    <th className="py-2 pr-4 font-medium">Pedidos</th>
+                    <th className="py-2 pr-4 font-medium">Receita</th>
+                    <th className="py-2 font-medium">Ticket médio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...revenueByYear].reverse().map((row) => (
+                    <tr key={row.periodKey} className="border-b border-slate-100 last:border-0">
+                      <td className="py-2 pr-4 text-ink">{row.periodKey}</td>
+                      <td className="py-2 pr-4 text-slate-600">{row.orders}</td>
+                      <td className="py-2 pr-4 text-slate-600">{formatBrl(row.revenueBrl)}</td>
+                      <td className="py-2 text-slate-600">{formatBrl(row.averageTicketBrl)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
