@@ -1,6 +1,7 @@
-import { inArray, sql } from "drizzle-orm";
+import { and, inArray, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { orders, siteVisits } from "@/db/schema";
+import { IS_HUMAN_VISIT } from "@/lib/human-visits";
 import {
   fillMonthlyRevenue,
   fillYearlyRevenue,
@@ -87,7 +88,10 @@ async function getNewCustomersByBucket(
   return new Map(rows.map((row) => [row.periodKey, Number(row.total)]));
 }
 
-/** Visitantes = IPs únicos no período (site_visits nunca faz upsert, 1 linha = 1 visita). */
+/**
+ * Visitantes = IPs únicos no período (site_visits nunca faz upsert, 1 linha =
+ * 1 visita), já sem as linhas de máquina — ver `IS_HUMAN_VISIT`.
+ */
 async function getVisitorsByBucket(
   unit: Unit,
   labelFormat: LabelFormat,
@@ -104,7 +108,9 @@ async function getVisitorsByBucket(
       total: sql<number>`count(distinct ${siteVisits.ip})::int`,
     })
     .from(siteVisits)
-    .where(sql`${VISIT_LOCAL_TS_SQL} >= ${windowStartSql(unit, periods, fallback)}`)
+    .where(
+      and(sql`${VISIT_LOCAL_TS_SQL} >= ${windowStartSql(unit, periods, fallback)}`, IS_HUMAN_VISIT)
+    )
     .groupBy(bucket)
     .orderBy(bucket);
 

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { siteVisits } from "@/db/schema";
 import { getClientIp, getLocationFromHeaders } from "@/lib/geo";
-import { isBotUserAgent, isTrackablePath } from "@/lib/visit-tracking";
+import { isMachineVisit, isTrackablePath } from "@/lib/visit-tracking";
 
 export const dynamic = "force-dynamic";
 
@@ -20,16 +20,29 @@ export async function POST(request: NextRequest) {
   try {
     const body = schema.parse(await request.json());
 
-    const userAgent = request.headers.get("user-agent");
-    if (isBotUserAgent(userAgent)) {
-      return NextResponse.json({ ok: true });
-    }
     if (!isTrackablePath(body.path)) {
       return NextResponse.json({ ok: true });
     }
 
+    const userAgent = request.headers.get("user-agent");
     const ip = getClientIp(request);
     const location = getLocationFromHeaders(request);
+
+    // IP privado, rastreador conhecido, cidade-datacenter ou estrangeiro sem
+    // cidade: máquina, não visitante. Descartar aqui em vez de gravar e
+    // filtrar depois mantém o card "IPs do dia" com gente de verdade.
+    if (
+      isMachineVisit({
+        ip,
+        userAgent,
+        city: location.city,
+        region: location.region,
+        country: location.country,
+      })
+    ) {
+      return NextResponse.json({ ok: true });
+    }
+
     const referrer = request.headers.get("referer") || request.headers.get("referrer");
 
     await db.insert(siteVisits).values({

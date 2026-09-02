@@ -1,6 +1,7 @@
-import { count, countDistinct, desc, gte, inArray, max, sum } from "drizzle-orm";
+import { and, count, countDistinct, desc, gte, inArray, max, sum } from "drizzle-orm";
 import { db } from "@/db";
 import { orders, siteVisits } from "@/db/schema";
+import { IS_HUMAN_VISIT } from "@/lib/human-visits";
 import { startOfTodayInTimeZone } from "@/lib/timezone";
 
 /** Pedidos que representam um cliente que efetivamente comprou. */
@@ -48,12 +49,12 @@ export async function getHermesStats(): Promise<HermesStats> {
     db
       .select({ total: countDistinct(siteVisits.ip) })
       .from(siteVisits)
-      .where(gte(siteVisits.visitedAt, onlineSince)),
+      .where(and(gte(siteVisits.visitedAt, onlineSince), IS_HUMAN_VISIT)),
 
     db
       .select({ total: countDistinct(siteVisits.ip) })
       .from(siteVisits)
-      .where(gte(siteVisits.visitedAt, todayStart)),
+      .where(and(gte(siteVisits.visitedAt, todayStart), IS_HUMAN_VISIT)),
 
     db
       .select({
@@ -65,7 +66,7 @@ export async function getHermesStats(): Promise<HermesStats> {
         lastAt: max(siteVisits.visitedAt),
       })
       .from(siteVisits)
-      .where(gte(siteVisits.visitedAt, todayStart))
+      .where(and(gte(siteVisits.visitedAt, todayStart), IS_HUMAN_VISIT))
       .groupBy(siteVisits.ip)
       .orderBy(desc(max(siteVisits.visitedAt)))
       .limit(IPS_LISTA_LIMIT),
