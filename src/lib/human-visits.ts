@@ -44,10 +44,15 @@ const UA_DE_VISITANTE = sql`(
 /**
  * País normalizado para sigla ISO minúscula.
  *
- * A coluna guarda o nome em pt-BR ("Estados Unidos"), porque `geo.ts` passa a
- * sigla do header da Vercel por `Intl.DisplayNames` antes de gravar. A lista
- * de datacenter é escrita em ISO, então a comparação traduz de volta — e
- * aceita a sigla também, para o caso de alguma linha ter entrado assim.
+ * A coluna não guarda ISO: `geo.ts` passa a sigla do header da Vercel por
+ * `Intl.DisplayNames` antes de gravar, e o que sai de lá depende do ICU do
+ * runtime — pt-BR ("Estados Unidos") no caso normal, inglês ("United States")
+ * em Node com small-icu, a sigla crua quando a conversão falha. A lista de
+ * datacenter é escrita em ISO, então a comparação traduz de volta, e as três
+ * grafias vêm de `COUNTRY_ALIASES`: é a MESMA tabela que `toCountryCode` usa
+ * do lado TypeScript, de propósito. Copiar as grafias para cá faria as duas
+ * pontas divergirem no primeiro país novo — e a divergência é silenciosa, só
+ * aparece como linha de bot sobrando (ou visitante real sumindo) no card.
  */
 const PAIS_BRUTO = sql`lower(btrim(coalesce(${siteVisits.country}, '')))`;
 

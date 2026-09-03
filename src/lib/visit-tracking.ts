@@ -87,20 +87,42 @@ export function isPrivateIp(ip: string | null | undefined): boolean {
 }
 
 /**
- * Nomes que a coluna `country` pode ter para o mesmo país.
+ * Grafias que a coluna `country` pode ter para o mesmo país.
  *
- * `getLocationFromHeaders` (geo.ts) passa a sigla ISO do header da Vercel por
- * `Intl.DisplayNames("pt-BR")` antes de gravar — o banco guarda "Estados
- * Unidos", não "US". A lista de datacenter é escrita em ISO, então a
- * comparação precisa aceitar as duas grafias (e o histórico já gravado, caso
- * alguma linha antiga tenha entrado com a sigla).
+ * São TRÊS, e nenhuma é opcional:
+ *
+ * - **ISO** ("US"): `getCountryName` (geo.ts) cai de volta na sigla crua
+ *   quando `Intl.DisplayNames` não resolve o código.
+ * - **pt-BR** ("Estados Unidos"): o caso normal — geo.ts passa a sigla do
+ *   header da Vercel por `Intl.DisplayNames("pt-BR")` antes de gravar.
+ * - **inglês** ("United States"): Node compilado com *small-icu* não tem os
+ *   dados de pt-BR e `Intl.DisplayNames` cai para inglês sem lançar erro nem
+ *   avisar. A gravação vira inglês sozinha, e é impossível saber pela linha
+ *   gravada qual runtime a escreveu.
+ *
+ * Por isso o inglês NÃO é ruído a ser podado desta lista: tirá-lo faz linha de
+ * datacenter escapar da regra inteira (`toCountryCode("United States")` deixa
+ * de virar "us") e, pior, faz brasileiro gravado como "Brazil" ser lido como
+ * estrangeiro e cortado como máquina. A mesma brecha esconde bot e esconde
+ * gente real.
+ *
+ * A lista de datacenter é escrita em ISO; é esta tabela que traduz de volta.
  */
-export const COUNTRY_ALIASES: Readonly<Record<string, readonly string[]>> = {
+const COUNTRY_ALIAS_TABLE = {
   br: ["br", "bra", "brasil", "brazil"],
   us: ["us", "usa", "estados unidos", "united states"],
   ca: ["ca", "can", "canadá", "canada"],
   de: ["de", "deu", "alemanha", "germany"],
-};
+} as const;
+
+/**
+ * Países cujas grafias estão todas mapeadas — o único conjunto que
+ * `DATACENTER_CITIES` pode citar. Ver o `satisfies` na lista abaixo.
+ */
+export type CountryCode = keyof typeof COUNTRY_ALIAS_TABLE;
+
+export const COUNTRY_ALIASES: Readonly<Record<CountryCode, readonly string[]>> =
+  COUNTRY_ALIAS_TABLE;
 
 const CODE_BY_ALIAS = new Map<string, string>(
   Object.entries(COUNTRY_ALIASES).flatMap(([code, aliases]) =>
@@ -126,6 +148,12 @@ export function toCountryCode(country: string | null | undefined): string {
  * Região vazia vale como "qualquer região" — a Vercel nem sempre manda o
  * código da região, e entrada que só casa com região preenchida não serviria
  * justamente nos registros que motivaram esta lista.
+ *
+ * O `satisfies` obriga o país a ser um `CountryCode`: o banco não guarda ISO,
+ * guarda nome, e uma entrada nova cujo país não esteja em `COUNTRY_ALIASES`
+ * nunca casaria com linha nenhuma — a regra morreria em silêncio, que é
+ * exatamente o defeito que esta lista existe para evitar. Assim quebra o
+ * `tsc`, não a produção.
  */
 export const DATACENTER_CITIES = [
   "us|va|ashburn",
@@ -139,7 +167,7 @@ export const DATACENTER_CITIES = [
   "ca|qc|beauharnois",
   // Vila de ~4.500 habitantes onde fica o parque de servidores da Hetzner.
   "de||falkenstein",
-] as const;
+] as const satisfies readonly `${CountryCode}|${string}|${string}`[];
 
 const DATACENTER_KEYS: ReadonlySet<string> = new Set(DATACENTER_CITIES);
 
