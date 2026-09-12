@@ -9,8 +9,9 @@ import { getApprovedReviewsForDestination, getAggregateRating } from "@/lib/revi
 import { db } from "@/db";
 import { destinations, plans } from "@/db/schema";
 import { getPlanFilterForDestination } from "@/lib/destinations/plan-filter";
+import { FALLBACK_REDIRECTS } from "@/lib/destinations/fallback-redirects";
 import { eq, and } from "drizzle-orm";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getSeoMetadata, getSiteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 // ISR: a pagina e pre-renderizada e revalidada de hora em hora.
@@ -64,7 +65,15 @@ export default async function DestinationPage({ params }: PageProps) {
     .where(and(eq(destinations.slug, slug), eq(destinations.isActive, true)))
     .limit(1);
 
-  if (!dest) notFound();
+  if (!dest) {
+    // Catalogo ainda vazio: manda o visitante (e o rastreador) para o conteudo
+    // equivalente em vez de queimar a visita num 404. Ver fallback-redirects.ts.
+    // Precisa vir antes de qualquer JSX: redirect() so vira 307 HTTP enquanto
+    // a resposta nao comecou a ser transmitida.
+    const fallback = FALLBACK_REDIRECTS[slug];
+    if (fallback) redirect(fallback);
+    notFound();
+  }
 
   const planFilter = getPlanFilterForDestination(dest.countryCode);
   const countryPlans = planFilter
