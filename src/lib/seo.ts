@@ -109,7 +109,9 @@ export function organizationJsonLd(): Record<string, unknown> {
     legalName: "Altivia",
     taxID: "63.101.423/0001-18",
     url: SITE_URL,
-    logo: `${SITE_URL}/icon`,
+    // Minimo do Google para logo de Organization: 112x112. O /icon tem 96x96
+    // (tamanho de favicon); o /apple-icon tem 180x180.
+    logo: `${SITE_URL}/apple-icon`,
     image: `${SITE_URL}/opengraph-image`,
     description: DEFAULT_DESCRIPTION,
     areaServed: "BR",
