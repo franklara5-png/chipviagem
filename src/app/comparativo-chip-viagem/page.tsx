@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PublicLayout } from "@/components/layout/public-layout";
 import { FaqSection, faqJsonLd } from "@/components/faq-section";
 import { JsonLd } from "@/components/json-ld";
@@ -196,6 +197,46 @@ export default function ComparativoChipViagemPage() {
         href="/planos"
         label="Ver todos os planos"
       />
+
+      {/* Leitura relacionada. A pagina so linkava para /planos e era um beco
+          sem saida — mesmo defeito corrigido no blog em agosto. O comparativo
+          detalhado vive no blog, que ranqueia melhor para essa intencao. */}
+      <section className="mx-auto max-w-3xl px-4 pt-16">
+        <h2 className="text-xl font-bold text-ink">Continue por aqui</h2>
+        <ul className="mt-4 space-y-3">
+          {[
+            {
+              href: "/blog/melhores-esim-viagem-comparativo",
+              title: "Comparativo de eSIM de viagem",
+              desc: "O que olhar antes de comprar, fornecedor por fornecedor.",
+            },
+            {
+              href: "/blog/esim-ou-chip-fisico-diferencas",
+              title: "eSIM ou chip físico: as diferenças",
+              desc: "Quando o chip físico ainda faz sentido e quando não faz.",
+            },
+            {
+              href: "/blog/chip-de-viagem-ou-roaming",
+              title: "Chip de viagem ou roaming da operadora",
+              desc: "A conta que quase ninguém faz antes de embarcar.",
+            },
+            {
+              href: "/quantos-gb-preciso",
+              title: "Calculadora de GB",
+              desc: "Estimativa de consumo pelo seu perfil de uso.",
+            },
+          ].map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className="group block">
+                <span className="font-medium text-ink transition group-hover:text-primary">
+                  {item.title}
+                </span>
+                <span className="mt-0.5 block text-sm text-ink-soft">{item.desc}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 py-16">
