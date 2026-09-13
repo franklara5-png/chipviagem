@@ -1,17 +1,16 @@
 import { ImageResponse } from "next/og";
 import { brandMarkDataUri } from "@/lib/brand-mark";
 
-// Multiplo de 48 px, que e o que o Google recomenda para o favicon exibido
-// ao lado do resultado na busca (a maioria das impressoes vem do celular).
-export const size = { width: 96, height: 96 };
+// Icone de atalho no iPhone. Fundo sem cantos: o iOS aplica a propria mascara.
+export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-export default function Icon() {
+export default function AppleIcon() {
   return new ImageResponse(
     (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={brandMarkDataUri({ background: "#2B1B33" })}
+        src={brandMarkDataUri({ background: "#2B1B33", rounded: false })}
         width={size.width}
         height={size.height}
         alt=""

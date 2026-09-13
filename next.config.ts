@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  // Navegadores pedem /favicon.ico por padrao e o Next 16 nao gera .ico por
+  // codigo. Sem isto, cada visitante novo baixava uma pagina 404 de ~50 KB.
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/icon" }];
+  },
 };
 
 export default nextConfig;

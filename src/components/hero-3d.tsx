@@ -94,9 +94,9 @@ export function Hero3DCard() {
 
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-                  Conectado em
+                  Pronto antes do
                 </p>
-                <p className="font-display text-2xl font-bold leading-tight">200+ destinos</p>
+                <p className="font-display text-2xl font-bold leading-tight">embarque</p>
               </div>
             </div>
           </div>

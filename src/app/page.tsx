@@ -127,7 +127,7 @@ export default async function HomePage() {
             </h1>
 
             <p className="mt-5 max-w-md text-lg text-white/65 md:text-xl">
-              Chip de viagem digital para mais de 200 destinos. Pague no Pix, escaneie o QR
+              Chip de viagem digital para usar internet no exterior. Pague no Pix, escaneie o QR
               code e chegue com internet funcionando.
             </p>
 
