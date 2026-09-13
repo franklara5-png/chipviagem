@@ -15,6 +15,9 @@ export interface BlogPost {
   seoTitle: string;
   description: string;
   date: string;
+  /** Ultima mudanca de CORPO do post, nao de frontmatter. Alimenta o
+   * lastModified do sitemap e o dateModified do Article. */
+  updated?: string;
   author: string;
   content: string;
   readingTime: string;
@@ -42,6 +45,7 @@ export function getBlogPosts(): BlogPost[] {
         seoTitle: (data.seoTitle as string) ?? (data.title as string),
         description: data.description as string,
         date: data.date as string,
+        updated: (data.updated as string) ?? undefined,
         author: (data.author as string) ?? "Equipe ChipViagem",
         content,
         readingTime: `${minutes} min de leitura`,

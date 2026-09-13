@@ -12,6 +12,19 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// As datas do frontmatter sao dia sem hora. Formatar em UTC: em
+// America/Sao_Paulo a meia-noite UTC volta um dia.
+const formatoData = new Intl.DateTimeFormat("pt-BR", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+function formatarData(iso: string) {
+  return formatoData.format(new Date(iso));
+}
+
 export async function generateStaticParams() {
   return getBlogPosts().map((p) => ({ slug: p.slug }));
 }
@@ -25,6 +38,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: post.seoTitle,
     description: post.description,
     path: `/blog/${slug}`,
+    article: { publishedTime: post.date, modifiedTime: post.updated ?? post.date },
   });
 }
 
@@ -46,6 +60,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   if (!post) notFound();
 
   const headings = extractHeadings(post.content);
+  const atualizado = post.updated && post.updated !== post.date ? post.updated : null;
 
   const pageUrl = `${getSiteUrl()}/blog/${slug}`;
   const jsonLd = {
@@ -54,9 +69,14 @@ export default async function BlogPostPage({ params }: PageProps) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
+    // So muda quando o corpo do post muda (campo `updated`), nao a cada ajuste
+    // de frontmatter. Data de atualizacao falsa e sinal que o Google ignora.
+    dateModified: post.updated ?? post.date,
+    image: `${getSiteUrl()}/opengraph-image`,
     url: pageUrl,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
-    author: { "@type": "Person", name: post.author },
+    // "Equipe ChipViagem" e a equipe, nao uma pessoa.
+    author: { "@type": "Organization", name: post.author, url: getSiteUrl() },
     publisher: {
       "@type": "Organization",
       name: "ChipViagem",
@@ -81,7 +101,15 @@ export default async function BlogPostPage({ params }: PageProps) {
           <article className="min-w-0">
             <Link href="/blog" className="text-sm text-primary hover:underline">← Voltar ao blog</Link>
             <header className="mt-4">
-              <time className="text-sm text-ink-soft">{post.date}</time>
+              <p className="text-sm text-ink-soft">
+                <time dateTime={post.date}>{formatarData(post.date)}</time>
+                {atualizado && (
+                  <>
+                    {" · Atualizado em "}
+                    <time dateTime={atualizado}>{formatarData(atualizado)}</time>
+                  </>
+                )}
+              </p>
               <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight text-ink md:text-4xl">{post.title}</h1>
               <p className="mt-2 text-ink-soft">{post.description}</p>
               <p className="mt-2 text-sm text-ink-soft">{post.author} · {post.readingTime}</p>

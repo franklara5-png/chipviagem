@@ -31,16 +31,21 @@ export interface SeoOptions {
   description?: string;
   path?: string;
   /**
-   * Só informe para sobrescrever a imagem padrão. Deixando vazio, o Next usa
-   * a convenção de arquivo `app/opengraph-image.tsx`, que gera a imagem e
-   * emite og:image/twitter:image automaticamente.
+   * Só informe para sobrescrever a imagem padrão. Deixando vazio, usa a imagem
+   * de `app/opengraph-image.tsx` EXPLICITAMENTE. Nao da para contar com a
+   * heranca da convencao de arquivo: como este helper sempre devolve um objeto
+   * `openGraph`, ele substitui o da raiz e a imagem sumia de todas as paginas
+   * menos da home (achado em 12/09/2026: posts compartilhados sem imagem).
    */
   ogImage?: string;
   noIndex?: boolean;
+  /** Posts do blog: vira og:type article com as datas de publicacao e de
+   * ultima mudanca de conteudo. */
+  article?: { publishedTime: string; modifiedTime?: string };
 }
 
 export function getSeoMetadata(options: SeoOptions = {}): Metadata {
-  const { title, description = DEFAULT_DESCRIPTION, path = "", ogImage, noIndex = false } = options;
+  const { title, description = DEFAULT_DESCRIPTION, path = "", ogImage, noIndex = false, article } = options;
 
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Conectado em qualquer lugar do mundo.`;
   const canonical = `${SITE_URL}${path}`;
@@ -53,7 +58,7 @@ export function getSeoMetadata(options: SeoOptions = {}): Metadata {
           alt: SITE_NAME,
         },
       ]
-    : undefined;
+    : [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: SITE_NAME }];
 
   return {
     title: fullTitle,
@@ -66,7 +71,13 @@ export function getSeoMetadata(options: SeoOptions = {}): Metadata {
       url: canonical,
       siteName: SITE_NAME,
       locale: "pt_BR",
-      type: "website",
+      ...(article
+        ? {
+            type: "article" as const,
+            publishedTime: article.publishedTime,
+            modifiedTime: article.modifiedTime ?? article.publishedTime,
+          }
+        : { type: "website" as const }),
       ...(images ? { images } : {}),
     },
     twitter: {
