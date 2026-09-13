@@ -16,9 +16,9 @@ import { eq } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export const metadata = getSeoMetadata({
-  title: "Quantos GB Preciso na Viagem? Calculadora",
+  title: "Quantos GB Levar na Viagem? Calculadora Grátis",
   description:
-    "Calcule quantos gigas de internet você precisa na viagem. Ferramenta gratuita com estimativa por hábito e recomendação de planos eSIM.",
+    "Informe quantos dias vai viajar e o que você usa no celular: a calculadora estima os GB de internet com 30% de margem de segurança. Grátis e sem cadastro.",
   path: "/quantos-gb-preciso",
 });
 

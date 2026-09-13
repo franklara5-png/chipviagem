@@ -48,6 +48,26 @@ const homeFaq = [
   },
 ];
 
+// Guias de destino linkados direto da home. A home e a pagina que o Google
+// mais rastreia; sem link dela, os posts dependiam so do sitemap e do /blog,
+// e em 12/09/2026 havia 21 URLs em "Detectada, mas nao indexada".
+// Lista estatica de proposito: ler content/blog em runtime numa pagina ISR
+// depende do tracing do bundle e pode voltar vazio so em producao.
+const destinationGuides = [
+  { slug: "chip-viagem-argentina", name: "Argentina", flag: "🇦🇷" },
+  { slug: "chip-viagem-portugal", name: "Portugal", flag: "🇵🇹" },
+  { slug: "chip-viagem-estados-unidos", name: "Estados Unidos", flag: "🇺🇸" },
+  { slug: "chip-viagem-chile", name: "Chile", flag: "🇨🇱" },
+  { slug: "chip-de-viagem-europa-guia", name: "Europa", flag: "🇪🇺" },
+  { slug: "chip-viagem-italia", name: "Itália", flag: "🇮🇹" },
+  { slug: "chip-viagem-franca", name: "França", flag: "🇫🇷" },
+  { slug: "chip-viagem-espanha", name: "Espanha", flag: "🇪🇸" },
+  { slug: "chip-viagem-mexico", name: "México", flag: "🇲🇽" },
+  { slug: "chip-viagem-uruguai", name: "Uruguai", flag: "🇺🇾" },
+  { slug: "internet-no-japao", name: "Japão", flag: "🇯🇵" },
+  { slug: "chip-viagem-dubai", name: "Dubai", flag: "🇦🇪" },
+];
+
 export default async function HomePage() {
   let featuredPlans: (typeof plans.$inferSelect)[] = [];
   let activeDestinations: (typeof destinations.$inferSelect)[] = [];
@@ -189,6 +209,36 @@ export default async function HomePage() {
           >
             Calcular meus GB
           </Link>
+        </div>
+      </section>
+
+      {/* Guias por destino */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
+          <h2 className="font-display text-3xl font-extrabold text-ink">
+            Guias de internet por destino
+          </h2>
+          <Link
+            href="/blog"
+            className="font-semibold text-primary transition-colors hover:text-primary-dark"
+          >
+            Ver todos os guias →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {destinationGuides.map((guide) => (
+            <Link
+              key={guide.slug}
+              href={`/blog/${guide.slug}`}
+              className="tilt-3d flex flex-col items-center rounded-2xl border border-ink/6 bg-surface-raised p-5 text-center shadow-[var(--shadow-lift)]"
+            >
+              <span className="text-3xl" aria-hidden="true">
+                {guide.flag}
+              </span>
+              <span className="mt-2 text-sm font-semibold text-ink">{guide.name}</span>
+              <span className="text-xs text-ink-soft">Guia de internet</span>
+            </Link>
+          ))}
         </div>
       </section>
 
