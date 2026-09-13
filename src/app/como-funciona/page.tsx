@@ -20,7 +20,7 @@ export default function ComoFuncionaPage() {
           {[
             {
               title: "1. Escolha seu plano",
-              body: "Navegue pelo catálogo e selecione o destino e a quantidade de dados. Temos planos para mais de 20 países e regiões, com opções de 3GB a 10GB e validade de 7 a 30 dias.",
+              body: "Escolha o destino — um país, uma região ou um plano global — e a franquia de dados. Se estiver em dúvida sobre quantos GB levar, a calculadora de GB estima pelo seu uso.",
             },
             {
               title: "2. Pague com Pix ou cartão",

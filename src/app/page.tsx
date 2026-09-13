@@ -306,7 +306,7 @@ export default async function HomePage() {
         />
         <div className="relative mx-auto max-w-4xl text-center">
           <h2 className="font-display text-3xl font-extrabold md:text-4xl">
-            Economize até <span className="text-gradient">90%</span> contra o roaming
+            Internet no exterior, <span className="text-gradient">sem roaming</span>
           </h2>
           <p className="mt-5 text-lg text-white/60">
             Instale antes de embarcar e chegue no destino com internet funcionando — sem

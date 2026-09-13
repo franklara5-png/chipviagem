@@ -5,10 +5,15 @@ import { PageHero } from "@/components/page-hero";
 import { CtaBand } from "@/components/cta-band";
 import { getSeoMetadata } from "@/lib/seo";
 
+// Comparacao entre CATEGORIAS (eSIM, roaming, chip local), nao entre produtos.
+// Sem preco, cobertura ou operadora de plano ChipViagem: o catalogo ainda nao
+// existe e esses dados dependem do provedor de eSIM. A versao anterior
+// afirmava "a partir de R$ 35", "R$ 8,90/GB", "100+ paises" e "5G em planos
+// selecionados" (corrigido em 13/09/2026).
 export const metadata = getSeoMetadata({
   title: "Comparativo de Chip de Viagem: Qual o Melhor?",
   description:
-    "Compare os melhores chips de viagem (eSIM) de 2026: preço, cobertura e velocidade. Descubra qual o melhor eSIM para sua próxima viagem.",
+    "eSIM, roaming da operadora ou chip local: como cada um cobra, cobertura, ativação e em que tipo de viagem cada um compensa. Guia 2026.",
   path: "/comparativo-chip-viagem",
 });
 
@@ -16,53 +21,53 @@ const faqItems = [
   {
     question: "Qual o melhor chip de viagem em 2026?",
     answer:
-      "O melhor chip de viagem depende do seu destino e uso. Para viagens regionais (ex: Europa), planos regionais oferecem o melhor custo-benefício (R$ 39–R$ 55/3GB). Para múltiplos continentes, o plano global é a melhor escolha. A ChipViagem trabalha com os provedores mais confiáveis do mercado para cada região.",
+      "Depende do roteiro. Para um bloco de países, como Europa ou América do Sul, um plano regional costuma ter o melhor custo por GB. Para vários continentes, o plano global faz sentido. Antes do preço, confira se a cobertura inclui todos os países onde o celular pode se conectar, incluindo escalas e bate-voltas.",
   },
   {
     question: "eSIM é melhor que chip físico para viagem?",
     answer:
-      "Sim. O eSIM não exige troca de chip, tem entrega imediata por e-mail e mantém seu número brasileiro ativo. Além disso, você instala antes de embarcar e ativa ao chegar. O chip físico exige compra no destino, muitas vezes com cadastro e passaporte.",
+      "Para a maioria das viagens, sim: o eSIM não exige troca de chip, chega por e-mail e mantém seu número brasileiro ativo. Você instala antes de embarcar e ativa ao chegar. O chip físico ainda é a saída para aparelho sem eSIM, e o chip local comprado no destino costuma exigir cadastro com passaporte.",
   },
   {
     question: "Qual o chip de viagem mais barato?",
     answer:
-      "Planos regionais de 3GB para 7 dias custam a partir de R$ 35 na ChipViagem. O valor por GB fica mais baixo nos planos maiores: um plano de 10GB pode custar R$ 8,90/GB, contra R$ 11,60/GB no plano de 3GB.",
+      "Não existe um mais barato em qualquer caso: o preço muda com a cobertura, a franquia, a validade e o câmbio. Compare o preço por GB, e não o valor final, e desconfie de plano barato que não cobre todos os países do roteiro. Os valores atuais estão na página de planos.",
   },
   {
     question: "O que comparar ao escolher um chip de viagem?",
     answer:
-      "Compare sempre: (1) cobertura no seu destino específico, (2) franquia de dados em alta velocidade, (3) duração do plano (7, 15 ou 30 dias), (4) se a tecnologia é 4G ou 5G, (5) se o suporte é em português, e (6) o preço por GB efetivo.",
+      "Compare, nesta ordem: (1) a lista de países cobertos, pelo nome; (2) a franquia em alta velocidade e o que acontece depois dela; (3) a validade e quando ela começa a contar; (4) se a rede no destino é 4G ou 5G; (5) se o suporte é em português; e (6) o preço por GB.",
   },
   {
     question: "Todos os eSIMs oferecem a mesma velocidade?",
     answer:
-      "Não. A velocidade depende da operadora parceira no destino e da tecnologia disponível (4G vs. 5G). Os planos da ChipViagem utilizam as maiores operadoras locais (T-Mobile, Vodafone, Movistar etc.) e oferecem 4G/LTE de alta velocidade, com 5G disponível em planos selecionados.",
+      "Não. A velocidade depende da operadora parceira no destino e da tecnologia disponível ali. Antes de comprar, confira no plano quais redes ele usa em cada país e se inclui 5G. Plano vendido como ilimitado costuma reduzir a velocidade depois de um volume diário.",
   },
 ];
 
 const comparisons = [
   {
-    label: "eSIM (ChipViagem)",
-    price: "R$ 35–R$ 199",
-    activation: "Imediata (QR code)",
-    coverage: "100+ países",
+    label: "eSIM de viagem",
+    payment: "Valor fechado pela franquia",
+    activation: "QR code, antes de embarcar",
+    coverage: "Um país, uma região ou global",
     support: "Português",
     dualSim: true,
     highlight: true,
   },
   {
-    label: "Roaming Internacional",
-    price: "R$ 30–R$ 60/dia",
+    label: "Roaming da operadora",
+    payment: "Pacote diário ou por consumo",
     activation: "Automática",
-    coverage: "Quase todos os países",
+    coverage: "Onde a operadora tem acordo",
     support: "Português",
     dualSim: true,
     highlight: false,
   },
   {
-    label: "Chip Físico Local",
-    price: "US$ 5–US$ 30",
-    activation: "Loja física",
+    label: "Chip físico local",
+    payment: "Recarga no destino",
+    activation: "Loja física, com cadastro",
     coverage: "Um país",
     support: "Idioma local",
     dualSim: false,
@@ -77,9 +82,9 @@ export default function ComparativoChipViagemPage() {
 
       <PageHero
         title="Comparativo de chip de viagem: qual o melhor?"
-        subtitle="Compare eSIMs, roaming internacional e chips físicos. Descubra a melhor opção para sua viagem."
-        badges={["Comparação imparcial", "Preços em reais", "Atualizado 2026"]}
-        cta={{ href: "/planos", label: "Ver planos e preços" }}
+        subtitle="eSIM, roaming da operadora ou chip local: como cada um cobra, o que cobre e em que tipo de viagem cada um compensa."
+        badges={["eSIM, roaming e chip local", "Sem trocar seu número", "Guia 2026"]}
+        cta={{ href: "/planos", label: "Ver planos" }}
       />
 
       {/* Tabela comparativa */}
@@ -104,10 +109,10 @@ export default function ComparativoChipViagemPage() {
             </thead>
             <tbody>
               <tr className="border-b border-ink/6">
-                <td className="px-6 py-3 font-medium text-ink">Preço (médio)</td>
+                <td className="px-6 py-3 font-medium text-ink">Como você paga</td>
                 {comparisons.map((c) => (
                   <td key={c.label} className={`px-6 py-3 ${c.highlight ? "bg-primary/5 font-semibold text-primary" : "text-ink-soft"}`}>
-                    {c.price}
+                    {c.payment}
                   </td>
                 ))}
               </tr>
@@ -152,25 +157,25 @@ export default function ComparativoChipViagemPage() {
       <section className="bg-surface px-4 py-16">
         <div className="mx-auto max-w-4xl">
           <h2 className="font-display text-center text-2xl font-extrabold text-ink md:text-3xl">
-            Por que o eSIM é a melhor escolha?
+            Por que o eSIM costuma ser a melhor escolha?
           </h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2">
             {[
               {
-                title: "💰 Mais barato",
-                desc: "Economize até 90% em comparação com o roaming internacional da sua operadora. Planos a partir de R$ 35.",
+                title: "💰 Conta previsível",
+                desc: "Valor fechado pela franquia, sem pacote diário de roaming se acumulando a cada dia de viagem.",
               },
               {
-                title: "⚡ Mais rápido",
-                desc: "Ativação em minutos, sem filas, sem loja física. Pague no Pix e receba o QR code imediatamente.",
+                title: "⚡ Sem fila nem loja",
+                desc: "O QR code chega por e-mail. Você instala em casa, antes de embarcar, e desembarca conectado.",
               },
               {
-                title: "🌍 Mais cobertura",
-                desc: "Mais de 100 países com um único eSIM. Troca automática de operadora conforme você se desloca.",
+                title: "🌍 Cobertura pelo roteiro",
+                desc: "Um único eSIM pode cobrir um país, uma região ou vários continentes, com troca automática de operadora na fronteira.",
               },
               {
-                title: "🔒 Mais seguro",
-                desc: "Seu número brasileiro permanece ativo para SMS de bancos. O eSIM é um perfil separado e seguro.",
+                title: "🔒 Seu número continua ativo",
+                desc: "O chip brasileiro fica no aparelho para receber SMS do banco. O eSIM é um perfil separado.",
               },
             ].map((item) => (
               <div
@@ -187,7 +192,7 @@ export default function ComparativoChipViagemPage() {
 
       <CtaBand
         title="Encontre o plano ideal para sua viagem"
-        subtitle="Compare planos, escolha a franquia e a duração, pague no Pix e viaje conectado. Simples assim."
+        subtitle="Escolha a cobertura e a franquia do seu roteiro e instale o eSIM antes de embarcar."
         href="/planos"
         label="Ver todos os planos"
       />

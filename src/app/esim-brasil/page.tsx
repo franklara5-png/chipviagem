@@ -31,7 +31,7 @@ const faqItems = [
   {
     question: "Quanto custa um eSIM para o Brasil?",
     answer:
-      "Os planos começam em R$ 35 para 3GB/7 dias. Planos maiores (5GB/15 dias ou 10GB/30 dias) custam entre R$ 55 e R$ 99. Muito mais barato do que o roaming internacional de operadoras estrangeiras no Brasil.",
+      "O valor depende da franquia, da validade e do câmbio, e os preços atuais ficam na página de planos. Para estadias de uma semana ou mais, um eSIM costuma sair mais em conta do que o roaming de uma operadora estrangeira no Brasil.",
   },
   {
     question: "Como funciona a ativação no Brasil?",
