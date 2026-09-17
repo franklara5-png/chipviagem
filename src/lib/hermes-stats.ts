@@ -1,4 +1,16 @@
-import { and, count, countDistinct, desc, gte, inArray, max, sum } from "drizzle-orm";
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNotNull,
+  max,
+  or,
+  sum,
+} from "drizzle-orm";
 import { db } from "@/db";
 import { orders, siteVisits } from "@/db/schema";
 import { IS_HUMAN_VISIT } from "@/lib/human-visits";
@@ -6,6 +18,27 @@ import { startOfTodayInTimeZone } from "@/lib/timezone";
 
 /** Pedidos que representam um cliente que efetivamente comprou. */
 const PAID_STATUSES = ["paid", "provisioning", "delivered"] as const;
+
+/**
+ * "Pago e o chip ainda não saiu": pedidos com pagamento confirmado que ainda
+ * não chegaram a `delivered` — o eSIM só é registrado em `esims` na entrega,
+ * então status entregue é o proxy de "entregue/ativado" (a ativação em si
+ * acontece no celular do cliente e não gera registro no banco).
+ *
+ * Inclui `failed` com `paid_at` preenchido: o cliente pagou, o provisionamento
+ * quebrou e só some quando um humano age (reprocessar ou reembolsar).
+ */
+export function pagosSemAtivacaoQuery() {
+  return db
+    .select({ total: count() })
+    .from(orders)
+    .where(
+      or(
+        inArray(orders.status, ["paid", "provisioning"]),
+        and(eq(orders.status, "failed"), isNotNull(orders.paidAt))
+      )
+    );
+}
 
 const SAO_PAULO_TZ = "America/Sao_Paulo";
 const ONLINE_WINDOW_MS = 5 * 60 * 1000;
@@ -20,6 +53,16 @@ export interface HermesIpEntry {
   lastAt: string;
 }
 
+export interface HermesPendencias {
+  /**
+   * Pedidos pagos cujo eSIM ainda não foi entregue/ativado. Sempre um
+   * inteiro >= 0. Único campo computável hoje — `falhasFornecedor24h` e
+   * `reembolsosPendentes` ficam de fora por não haver dado no schema
+   * (sem timestamp de falha e sem estado de reembolso pendente).
+   */
+  pagosSemAtivacao: number;
+}
+
 export interface HermesStats {
   clientes: number;
   onlineAgora: number;
@@ -27,6 +70,7 @@ export interface HermesStats {
   ipsHoje: number;
   ipsLista: HermesIpEntry[];
   receita?: number;
+  pendencias: HermesPendencias;
 }
 
 /**
@@ -40,7 +84,8 @@ export async function getHermesStats(): Promise<HermesStats> {
   const todayStart = startOfTodayInTimeZone(SAO_PAULO_TZ, now);
   const onlineSince = new Date(now.getTime() - ONLINE_WINDOW_MS);
 
-  const [[clientesRow], [onlineRow], [hojeRow], ipsRows, [receitaRow]] = await Promise.all([
+  const [[clientesRow], [onlineRow], [hojeRow], ipsRows, [receitaRow], [pendenciasRow]] =
+    await Promise.all([
     db
       .select({ total: countDistinct(orders.customerEmail) })
       .from(orders)
@@ -75,6 +120,8 @@ export async function getHermesStats(): Promise<HermesStats> {
       .select({ total: sum(orders.amountBrl) })
       .from(orders)
       .where(gte(orders.paidAt, todayStart)),
+
+    pagosSemAtivacaoQuery(),
   ]);
 
   const ipsLista: HermesIpEntry[] = ipsRows
@@ -94,6 +141,9 @@ export async function getHermesStats(): Promise<HermesStats> {
     visitantesHoje: Number(hojeRow?.total ?? 0),
     ipsHoje: Number(hojeRow?.total ?? 0),
     ipsLista,
+    pendencias: {
+      pagosSemAtivacao: Number(pendenciasRow?.total ?? 0),
+    },
   };
 
   if (receitaRow?.total != null) {
