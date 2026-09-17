@@ -32,7 +32,11 @@ async function countOverRows(rows: Array<{ status: string; paidAt: string | null
   const { sql: generatedSql, params } = pagosSemAtivacaoQuery().toSQL();
 
   const values = rows
-    .map((r) => `('${r.status.replace(/'/g, "''")}'::text, ${r.paidAt ? `'${r.paidAt}'::timestamp` : "NULL"})`)
+    // O NULL precisa do cast igual ao valor: sem ele o Postgres infere `text`
+    // para a coluna do CTE, e a comparação de carência morre com
+    // "operator does not exist: text <= timestamp". A query antiga só fazia
+    // `is not null` e nunca exercitou o tipo, então isso passou despercebido.
+    .map((r) => `('${r.status.replace(/'/g, "''")}'::text, ${r.paidAt ? `'${r.paidAt}'::timestamp` : "NULL::timestamp"})`)
     .join(", ");
 
   // O SQL é o MESMO que a rota executa em produção, só que com `orders`
@@ -78,19 +82,64 @@ async function main() {
 
   // ── TESTE B: mesmo SQL, tabela sombreada por CTE ──
   console.log("\nTESTE B — SQL real com `orders` sombreada por CTE:");
-  const umPago = await countOverRows([{ status: "paid", paidAt: new Date().toISOString() }]);
-  assert(umPago === 1, `um pedido pago sem ativação conta 1 (recebido ${umPago})`);
+
+  const agora = new Date().toISOString();
+  const antigo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+
+  const recemPago = await countOverRows([{ status: "paid", paidAt: agora }]);
+  assert(
+    recemPago === 0,
+    `pedido pago AGORA não conta — pode ser entrega em andamento (recebido ${recemPago})`
+  );
+
+  const pagoAntigo = await countOverRows([{ status: "paid", paidAt: antigo }]);
+  assert(
+    pagoAntigo === 1,
+    `o mesmo pedido além da carência conta (recebido ${pagoAntigo})`
+  );
+
+  const falhouAgora = await countOverRows([{ status: "failed", paidAt: agora }]);
+  assert(
+    falhouAgora === 1,
+    `failed com paid_at conta NA HORA, sem carência — já quebrou, não há nada em andamento (recebido ${falhouAgora})`
+  );
+
+  const presoSemData = await countOverRows([{ status: "provisioning", paidAt: null }]);
+  assert(
+    presoSemData === 1,
+    `provisioning sem paid_at conta — anomalia, invisível seria pior (recebido ${presoSemData})`
+  );
 
   const matriz = await countOverRows([
-    { status: "paid", paidAt: new Date().toISOString() }, // conta
-    { status: "provisioning", paidAt: new Date().toISOString() }, // conta
-    { status: "failed", paidAt: new Date().toISOString() }, // conta (pagou, chip não saiu)
-    { status: "failed", paidAt: null }, // não conta (nunca pagou)
-    { status: "delivered", paidAt: new Date().toISOString() }, // não conta
-    { status: "refunded", paidAt: new Date().toISOString() }, // não conta
+    { status: "paid", paidAt: agora }, // não conta — dentro da carência
+    { status: "paid", paidAt: antigo }, // conta
+    { status: "provisioning", paidAt: agora }, // não conta — dentro da carência
+    { status: "provisioning", paidAt: antigo }, // conta — preso
+    { status: "failed", paidAt: agora }, // conta — sem carência
+    { status: "failed", paidAt: null }, // não conta — nunca pagou
+    { status: "delivered", paidAt: antigo }, // não conta
+    { status: "refunded", paidAt: antigo }, // não conta
     { status: "pending", paidAt: null }, // não conta
   ]);
   assert(matriz === 3, `matriz de estados conta exatamente 3 (recebido ${matriz})`);
+
+  // ── TESTE C: a armadilha do parâmetro dentro de string literal ──
+  //
+  // `interval '$1 minutes'` é aceito pelo Postgres SEM ERRO e vale 1 minuto —
+  // o número escolhido nunca chega ao banco, e muda sozinho se a ordem dos
+  // parâmetros mudar. Mordeu no RevelaPlaca em 17/09/2026 e o teste de lá não
+  // pegou, porque conferia só o texto do SQL. Aqui a carência tem que estar
+  // entre os PARÂMETROS.
+  console.log("\nTESTE C — carência vai como parâmetro, não dentro de aspas:");
+  const { sql: sqlGerado, params } = pagosSemAtivacaoQuery().toSQL();
+  assert(
+    !/interval\s+'\$\d/.test(sqlGerado),
+    "nenhum parâmetro dentro de `interval '...'`"
+  );
+  assert(
+    params.some((p) => Number(p) === 15),
+    `a carência (15) aparece entre os params (recebido ${JSON.stringify(params)})`
+  );
 
   console.log("\nTodos os testes passaram.");
 }
