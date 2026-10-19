@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { siteVisits } from "@/db/schema";
 import { getClientIp, getLocationFromHeaders } from "@/lib/geo";
 import { isMachineVisit, isTrackablePath } from "@/lib/visit-tracking";
+import { naoContarVisita } from "@/lib/nao-contar";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,10 @@ export async function POST(request: NextRequest) {
 
     const userAgent = request.headers.get("user-agent");
     const ip = getClientIp(request);
+    // Aparelho ou rede do Frank (ver src/lib/nao-contar.ts).
+    if (naoContarVisita(request.headers, ip)) {
+      return NextResponse.json({ ok: true });
+    }
     const location = getLocationFromHeaders(request);
 
     // IP privado, rastreador conhecido, cidade-datacenter ou estrangeiro sem
