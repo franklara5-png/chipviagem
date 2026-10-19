@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
  */
 export function GET(request: Request) {
   const desfazer = new URL(request.url).searchParams.has("desfazer");
-  const resposta = new NextResponse(htmlNaoContar("Chip Viagem", desfazer), {
+  const resposta = new NextResponse(htmlNaoContar("Chip Viagem", desfazer, request.headers.get("x-nonce")), {
     headers: {
       "content-type": "text/html; charset=utf-8",
       "cache-control": "no-store",
